@@ -68,7 +68,7 @@ GitHub Pages で公開する静的ツール集のリポジトリ。
 ### サブモジュールの登録
 
 ```bash
-git submodule add https://github.com/<username>/rpgsave-editor.git rpgsave-editor
+git submodule add https://github.com/<username>/rpgsave-editor.git pages/rpgsave-editor
 git commit -m "add rpgsave-editor submodule"
 ```
 
@@ -97,7 +97,7 @@ git commit -m "add rpgsave-editor submodule"
 
 1. サブモジュールを追加する
    ```bash
-   git submodule add https://github.com/<username>/<tool>.git <tool>
+   git submodule add https://github.com/<username>/<tool>.git pages/<tool>
    ```
 2. 必要な Secrets を lab に登録する（`PRIVATE_REPO_TOKEN` の対象リポジトリ追加・GA4 ID 等）
 3. `deploy.yml` にビルド・コピーステップを追加する

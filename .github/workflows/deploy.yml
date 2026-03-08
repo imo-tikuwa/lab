@@ -46,21 +46,21 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: rpgsave-editor/package-lock.json
+          cache-dependency-path: pages/rpgsave-editor/package-lock.json
 
       - name: Install dependencies (rpgsave-editor)
-        working-directory: rpgsave-editor
+        working-directory: pages/rpgsave-editor
         run: npm ci
 
       - name: Build rpgsave-editor
-        working-directory: rpgsave-editor
+        working-directory: pages/rpgsave-editor
         run: npm run build
         env:
           VITE_BASE_URL: /lab/rpgsave-editor/
           VITE_RPGSAVE_EDITOR_GA4_MEASUREMENT_ID: ${{ secrets.VITE_RPGSAVE_EDITOR_GA4_MEASUREMENT_ID }}
 
       - name: Copy rpgsave-editor build
-        run: cp -r rpgsave-editor/dist site/rpgsave-editor
+        run: cp -r pages/rpgsave-editor/dist site/rpgsave-editor
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
