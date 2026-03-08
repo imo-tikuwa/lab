@@ -1,0 +1,79 @@
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+
+      # lab のランディングページをビルド
+      - name: Setup Node.js (lab)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies (lab)
+        run: npm ci
+
+      - name: Build lab
+        run: npm run build
+
+      - name: Prepare site directory
+        run: mv dist site
+
+      # rpgsave-editor のビルド
+      - name: Setup Node.js (rpgsave-editor)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: rpgsave-editor/package-lock.json
+
+      - name: Install dependencies (rpgsave-editor)
+        working-directory: rpgsave-editor
+        run: npm ci
+
+      - name: Build rpgsave-editor
+        working-directory: rpgsave-editor
+        run: npm run build
+        env:
+          VITE_BASE_URL: /lab/rpgsave-editor/
+          VITE_RPGSAVE_EDITOR_GA4_MEASUREMENT_ID: ${{ secrets.VITE_RPGSAVE_EDITOR_GA4_MEASUREMENT_ID }}
+
+      - name: Copy rpgsave-editor build
+        run: cp -r rpgsave-editor/dist site/rpgsave-editor
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
