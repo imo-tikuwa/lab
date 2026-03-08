@@ -26,6 +26,20 @@ const tools: Tool[] = [
     path: '/lab/rpgsave-editor/',
     publishedAt: '2026/03/08',
   },
+  {
+    name: '風来のシレン6 値段識別ツール',
+    description: '風来のシレン6 とぐろ島探検録に出てくるアイテムの買値・売値からアイテムを絞り込む識別ツール',
+    features: [
+      '買値・売値を入力してアイテムを絞り込む（シンプルモード）',
+      'データテーブルを使った複合条件でのフィルタリング（詳細モード）',
+      '祝福・呪い状態の価格を考慮した表示',
+      '識別済みアイテムの除外設定（命名済み・識別済みアイテムを手動で管理）',
+      '杖・お香・壺の使用回数ごとの価格表示',
+    ],
+    techStack: ['Vue 3 / TypeScript', 'PrimeVue / Tailwind CSS', 'Pinia', 'Vite'],
+    path: '/lab/shiren6-price-helper/',
+    publishedAt: '2024/02/19',
+  },
 ]
 
 type LayoutType = 'list' | 'grid'

@@ -56,11 +56,31 @@ jobs:
         working-directory: pages/rpgsave-editor
         run: npm run build
         env:
-          VITE_BASE_URL: /lab/rpgsave-editor/
           VITE_RPGSAVE_EDITOR_GA4_MEASUREMENT_ID: ${{ secrets.VITE_RPGSAVE_EDITOR_GA4_MEASUREMENT_ID }}
 
       - name: Copy rpgsave-editor build
         run: cp -r pages/rpgsave-editor/dist site/rpgsave-editor
+
+      # shiren6-price-helper のビルド
+      - name: Setup Node.js (shiren6-price-helper)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: pages/shiren6-price-helper/package-lock.json
+
+      - name: Install dependencies (shiren6-price-helper)
+        working-directory: pages/shiren6-price-helper
+        run: npm ci
+
+      - name: Build shiren6-price-helper
+        working-directory: pages/shiren6-price-helper
+        run: npm run build
+        env:
+          VITE_SHIREN6_PRICE_HELPER_GA4_MEASUREMENT_ID: ${{ secrets.VITE_SHIREN6_PRICE_HELPER_GA4_MEASUREMENT_ID }}
+
+      - name: Copy shiren6-price-helper build
+        run: cp -r pages/shiren6-price-helper/dist site/shiren6-price-helper
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

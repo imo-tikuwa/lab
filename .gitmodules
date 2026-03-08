@@ -1,3 +1,6 @@
 [submodule "rpgsave-editor"]
 	path = pages/rpgsave-editor
 	url = https://github.com/imo-tikuwa/rpgsave-editor.git
+[submodule "shiren6-price-helper"]
+	path = pages/shiren6-price-helper
+	url = https://github.com/imo-tikuwa/shiren6-price-helper.git
