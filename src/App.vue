@@ -45,7 +45,7 @@ const tools: Tool[] = [
 type LayoutType = 'list' | 'grid'
 
 const layout = ref<LayoutType>('list')
-const sortOrder = ref<1 | -1>(1)
+const sortOrder = ref<1 | -1>(-1)
 
 const layoutOptions: { value: LayoutType; icon: string }[] = [
   { value: 'list', icon: 'pi pi-list' },
