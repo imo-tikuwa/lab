@@ -11,8 +11,14 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Badge: typeof import('primevue/badge')['default']
     Button: typeof import('primevue/button')['default']
     DataView: typeof import('primevue/dataview')['default']
+    Drawer: typeof import('primevue/drawer')['default']
+    PortfolioDetailDrawer: typeof import('./../components/PortfolioDetailDrawer.vue')['default']
+    ScreenshotDrawer: typeof import('./../components/ScreenshotDrawer.vue')['default']
+    Select: typeof import('primevue/select')['default']
     SelectButton: typeof import('primevue/selectbutton')['default']
+    SquaresBackground: typeof import('./../components/SquaresBackground.vue')['default']
   }
 }

@@ -2,6 +2,28 @@
 @import 'tailwindcss-primeui';
 @import 'primeicons/primeicons.css';
 
+@variant dark (&:where(.dark, .dark *));
+
 html {
   font-size: 14px;
+}
+
+/* スクロールバー */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--p-surface-300) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--p-surface-300);
+  border-radius: 3px;
 }
