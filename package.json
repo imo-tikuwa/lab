@@ -15,12 +15,16 @@
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "fetch-articles": "node scripts/fetch-articles.js",
+    "fetch-github-stats": "node scripts/fetch-github-stats.js"
   },
   "dependencies": {
     "@primeuix/themes": "^2.0.3",
     "@vueuse/core": "^14.2.1",
+    "chart.js": "^4.5.1",
     "fflate": "^0.8.2",
+    "gsap": "^3.14.2",
     "idb": "^8.0.3",
     "lz-string": "^1.5.0",
     "pako": "^2.1.0",

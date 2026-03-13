@@ -8,6 +8,12 @@ html {
   font-size: 14px;
 }
 
+/* TargetCursor: デフォルトカーソル非表示 */
+.hide-cursor,
+.hide-cursor * {
+  cursor: none !important;
+}
+
 /* スクロールバー */
 * {
   scrollbar-width: thin;

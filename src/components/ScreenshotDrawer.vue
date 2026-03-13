@@ -40,6 +40,7 @@ const currentItem = computed(() => props.screenshots[internalActiveIndex.value] 
     v-model:visible="internalVisible"
     position="left"
     style="width: min(95vw, 700px)"
+    :pt="{ pcCloseButton: { root: { class: 'cursor-target' } } }"
   >
     <template #header>
       <div class="flex items-center gap-2">
@@ -62,14 +63,14 @@ const currentItem = computed(() => props.screenshots[internalActiveIndex.value] 
         <!-- 前へ/次へボタン -->
         <button
           v-if="screenshots.length > 1"
-          class="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+          class="cursor-target absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
           @click="prev"
         >
           <i class="pi pi-chevron-left" />
         </button>
         <button
           v-if="screenshots.length > 1"
-          class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+          class="cursor-target absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
           @click="next"
         >
           <i class="pi pi-chevron-right" />
@@ -83,7 +84,7 @@ const currentItem = computed(() => props.screenshots[internalActiveIndex.value] 
           :key="ss.thumbnailImageSrc"
           :src="ss.thumbnailImageSrc"
           :alt="ss.alt"
-          class="h-16 w-24 object-cover rounded cursor-pointer transition-all"
+          class="cursor-target h-16 w-24 object-cover rounded cursor-pointer transition-all"
           :class="index === internalActiveIndex
             ? 'ring-2 ring-primary-500 opacity-100'
             : 'opacity-60 hover:opacity-100'"

@@ -4,7 +4,7 @@ export type ColorMode = 'light' | 'dark' | 'system'
 
 const STORAGE_KEY = 'lab-color-mode'
 
-const colorMode = ref<ColorMode>((localStorage.getItem(STORAGE_KEY) as ColorMode | null) ?? 'system')
+const colorMode = ref<ColorMode>((localStorage.getItem(STORAGE_KEY) as ColorMode | null) ?? 'dark')
 
 const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 

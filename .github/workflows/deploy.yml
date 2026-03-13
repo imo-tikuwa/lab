@@ -34,6 +34,16 @@ jobs:
       - name: Install dependencies (lab)
         run: npm ci
 
+      - name: Fetch articles data
+        run: node scripts/fetch-articles.js
+
+      - name: Fetch GitHub contribution data
+        env:
+          # GH_STATS_TOKEN（PAT）があればプライベートリポジトリのコントリビューションも取得
+          # 未設定時は GITHUB_TOKEN（自動提供）にフォールバックしてパブリックデータのみ取得
+          GH_STATS_TOKEN: ${{ secrets.GH_STATS_TOKEN || secrets.GITHUB_TOKEN }}
+        run: node scripts/fetch-github-stats.js
+
       - name: Build lab
         run: npm run build
 

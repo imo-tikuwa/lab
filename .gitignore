@@ -32,6 +32,9 @@ coverage
 
 .eslintcache
 
+# Generated data files (fetch scripts で生成)
+/public/data/
+
 # Cypress
 /cypress/videos/
 /cypress/screenshots/

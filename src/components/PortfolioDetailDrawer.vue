@@ -43,6 +43,7 @@ const hasStacks = computed(
     v-model:visible="internalVisible"
     position="right"
     style="width: min(95vw, 680px)"
+    :pt="{ pcCloseButton: { root: { class: 'cursor-target' } } }"
   >
     <template #header>
       <div class="flex flex-col gap-1.5">
@@ -106,7 +107,7 @@ const hasStacks = computed(
               <h3 class="font-bold text-surface-800 dark:text-surface-100">スクリーンショット</h3>
             </div>
             <div
-              class="relative overflow-hidden rounded cursor-pointer group aspect-video"
+              class="cursor-target relative overflow-hidden rounded cursor-pointer group aspect-video"
               @click="openScreenshotDrawer(0)"
             >
               <img
@@ -190,7 +191,7 @@ const hasStacks = computed(
                 rel="noopener noreferrer"
                 class="no-underline"
               >
-                <Button :label="link.label" icon="pi pi-external-link" icon-pos="right" class="w-full" size="small" />
+                <Button :label="link.label" icon="pi pi-external-link" icon-pos="right" class="cursor-target w-full" size="small" />
               </a>
             </div>
           </div>

@@ -1,92 +1,40 @@
 <script setup lang="ts">
 import { useColorMode } from '@/composables/color-mode'
 import type { ColorMode } from '@/composables/color-mode'
-import { portfolioItems } from '@/data/portfolio-items'
-import type { PortfolioItem } from '@/types/portfolio'
-import { formatPeriod } from '@/utils/portfolio'
 
-type LayoutType = 'list' | 'grid'
+import { usePageNavStore, PAGE_SECTION_ORDER } from '@/stores/page-nav'
+import type { PageSection } from '@/stores/page-nav'
+import { useThemeStore } from '@/stores/theme'
+import { COLOR_THEMES, applyPrimaryColor } from '@/theme'
 
 const { colorMode, isDark, setColorMode } = useColorMode()
+const navStore = usePageNavStore()
+const themeStore = useThemeStore()
 
-const layout = ref<LayoutType>('list')
-const sortOrder = ref<1 | -1>(-1)
-const selectedCategory = ref('すべて')
-const detailVisible = ref(false)
-const selectedItem = ref<PortfolioItem | null>(null)
-
-const categoryOptions = [
-  'すべて',
-  'GitHub Pages',
-  'サーバーレスアプリケーション',
-  'デスクトップアプリ',
-  'Chrome向けブラウザ拡張',
-  'ツール',
-]
-
-const layoutOptions: { value: LayoutType; icon: string }[] = [
-  { value: 'list', icon: 'pi pi-list' },
-  { value: 'grid', icon: 'pi pi-th-large' },
-]
-
-const filteredItems = computed(() => {
-  const items =
-    selectedCategory.value === 'すべて'
-      ? portfolioItems
-      : portfolioItems.filter((item) => item.category.includes(selectedCategory.value))
-  return [...items].sort((a, b) => a.period_from.localeCompare(b.period_from) * sortOrder.value)
+// ページロード時に永続化されたプライマリカラーを適用
+onMounted(() => {
+  applyPrimaryColor(themeStore.primaryColor)
 })
 
-function toggleSort(): void {
-  sortOrder.value = sortOrder.value === 1 ? -1 : 1
-}
+type NavItem = { key: PageSection; label: string; icon: string }
 
-function handleItemClick(item: PortfolioItem): void {
-  selectedItem.value = item
-  detailVisible.value = true
-}
+const navItems: NavItem[] = [
+  { key: 'portfolio', label: 'ポートフォリオ', icon: 'pi pi-th-large' },
+  { key: 'profile', label: 'プロフ', icon: 'pi pi-user' },
+  { key: 'github', label: '草', icon: 'pi pi-github' },
+]
 
-function openExternalLink(item: PortfolioItem): void {
-  const link = item.links?.find((l) => l.label === 'GitHub Pages')
-  if (link) {
-    window.open(link.url, '_blank', 'noopener,noreferrer')
-  }
-}
-
-function hasExternalLink(item: PortfolioItem): boolean {
-  return !!item.links?.some((l) => l.label === 'GitHub Pages')
-}
-
-function limitedStacks(item: PortfolioItem): string[] {
-  return [
-    ...item.stacks.languages,
-    ...item.stacks.frameworks,
-    ...item.stacks.libraries,
-    ...item.stacks.tools,
-    ...item.stacks.others,
-  ].slice(0, 4)
-}
-
-function extraStackCount(item: PortfolioItem): number {
-  const total =
-    item.stacks.languages.length +
-    item.stacks.frameworks.length +
-    item.stacks.libraries.length +
-    item.stacks.tools.length +
-    item.stacks.others.length
-  return total > 4 ? total - 4 : 0
-}
+const transitionName = computed(() => {
+  const prev = PAGE_SECTION_ORDER[navStore.previousSection]
+  const curr = PAGE_SECTION_ORDER[navStore.currentSection]
+  return prev <= curr ? 'slide-left' : 'slide-right'
+})
 
 const colorModeOptions: { value: ColorMode; icon: string }[] = [
   { value: 'light', icon: 'pi pi-sun' },
   { value: 'dark', icon: 'pi pi-moon' },
   { value: 'system', icon: 'pi pi-desktop' },
 ]
-
-const colorModeModel = computed({
-  get: () => colorMode.value,
-  set: (val: ColorMode) => setColorMode(val),
-})
 
 const squaresBorderColor = computed(() => (isDark.value ? '#334155' : '#cbd5e1'))
 const squaresHoverFillColor = computed(() => (isDark.value ? '#1e293b' : '#e2e8f0'))
@@ -95,6 +43,8 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
 
 <template>
   <div class="min-h-screen">
+    <TargetCursor target-selector=".cursor-target" />
+
     <SquaresBackground
       class="fixed inset-0 -z-10"
       direction="diagonal"
@@ -109,228 +59,102 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
     >
       <span class="text-sm text-surface-400 dark:text-surface-500">imo-tikuwa's</span>
       <span class="text-sm font-bold text-surface-700 dark:text-surface-200">lab</span>
-      <div class="ml-auto">
-        <SelectButton
-          v-model="colorModeModel"
-          :options="colorModeOptions"
-          option-value="value"
-          :allow-empty="false"
-          size="small"
+
+      <nav class="flex-1 flex justify-center gap-1">
+        <button
+          v-for="item in navItems"
+          :key="item.key"
+          class="cursor-target flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors"
+          :class="
+            navStore.currentSection === item.key
+              ? 'text-primary-500 bg-primary-50 dark:bg-primary-950/40'
+              : 'text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800'
+          "
+          @click="navStore.navigate(item.key)"
         >
-          <template #option="{ option }">
-            <i :class="option.icon" />
-          </template>
-        </SelectButton>
+          <i :class="item.icon" style="font-size: 0.8rem" />
+          {{ item.label }}
+        </button>
+      </nav>
+
+      <!-- プライマリカラー切り替えスウォッチ -->
+      <div class="flex items-center gap-1.5">
+        <button
+          v-for="theme in COLOR_THEMES"
+          :key="theme.name"
+          class="cursor-target transition-all duration-300 hover:brightness-110 focus:outline-none"
+          :style="{
+            backgroundColor: theme.color,
+            transform: 'skewX(-15deg)',
+            width: themeStore.primaryColor === theme.name ? '2.625rem' : '1.75rem',
+            height: themeStore.primaryColor === theme.name ? '1.75rem' : '1.5rem',
+            boxShadow:
+              themeStore.primaryColor === theme.name
+                ? `0 2px 8px ${theme.color}80`
+                : `0 2px 8px ${theme.color}00`,
+          }"
+          :title="theme.name"
+          @click="themeStore.setPrimaryColor(theme.name)"
+        />
+      </div>
+
+      <!-- 仕切り -->
+      <div class="w-px h-5 bg-surface-200 dark:bg-surface-700 mx-1.5" />
+
+      <!-- カラーモード切り替え -->
+      <div class="flex items-center gap-0.5">
+        <button
+          v-for="option in colorModeOptions"
+          :key="option.value"
+          class="cursor-target w-7 h-6 flex items-center justify-center rounded transition-all focus:outline-none hover:bg-surface-100 dark:hover:bg-surface-800"
+          :class="
+            colorMode === option.value
+              ? 'text-primary-500'
+              : 'text-surface-500 dark:text-surface-400'
+          "
+          :title="option.value"
+          @click="setColorMode(option.value)"
+        >
+          <i :class="option.icon" />
+        </button>
       </div>
     </header>
 
-    <main class="max-w-screen-xl mx-auto px-6 py-8">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
-        <div class="flex items-center gap-2 flex-1">
-          <Button
-            :icon="sortOrder === 1 ? 'pi pi-sort-amount-up-alt' : 'pi pi-sort-amount-down-alt'"
-            :label="sortOrder === 1 ? '開始日: 古い順' : '開始日: 新しい順'"
-            variant="outlined"
-            size="small"
-            class="!bg-white dark:!bg-surface-900"
-            @click="toggleSort"
-          />
-          <Select
-            v-model="selectedCategory"
-            :options="categoryOptions"
-            size="small"
-            class="w-[190px]"
-          />
-        </div>
-        <SelectButton
-          v-model="layout"
-          :options="layoutOptions"
-          option-value="value"
-          :allow-empty="false"
-        >
-          <template #option="{ option }">
-            <i :class="option.icon" />
-          </template>
-        </SelectButton>
-      </div>
-
-      <DataView :value="filteredItems" :layout="layout" data-key="slug">
-        <template #list="{ items }">
-          <div
-            class="flex flex-col divide-y divide-surface-200 dark:divide-surface-700 border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900"
-          >
-            <div
-              v-for="item in items"
-              :key="item.slug"
-              class="flex flex-col sm:flex-row gap-4 p-5 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors cursor-pointer"
-              @click="handleItemClick(item)"
-            >
-              <img
-                :src="item.thumbnail"
-                :alt="`${item.title}のサムネイル`"
-                class="w-full sm:w-44 h-28 object-cover rounded shrink-0"
-              />
-              <div class="flex flex-col flex-1 gap-2 min-w-0">
-                <div class="flex items-start justify-between gap-3">
-                  <div class="flex flex-col gap-1.5 min-w-0">
-                    <span
-                      class="text-base font-semibold text-surface-900 dark:text-surface-50 leading-snug"
-                    >
-                      {{ item.title }}
-                    </span>
-                    <div class="flex flex-wrap gap-1">
-                      <Badge
-                        v-for="cat in item.category"
-                        :key="cat"
-                        :value="cat"
-                        severity="info"
-                        class="text-xs"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <p
-                  class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed line-clamp-2"
-                >
-                  {{ item.summary }}
-                </p>
-                <div class="flex flex-wrap gap-1 mt-auto">
-                  <Badge
-                    v-for="stack in limitedStacks(item)"
-                    :key="stack"
-                    :value="stack"
-                    severity="secondary"
-                    class="text-xs"
-                  />
-                  <Badge
-                    v-if="extraStackCount(item) > 0"
-                    :value="`+${extraStackCount(item)}`"
-                    severity="secondary"
-                    class="text-xs"
-                  />
-                </div>
-                <div class="flex items-center justify-between pt-1">
-                  <span
-                    class="flex items-center gap-1.5 text-xs text-surface-400 dark:text-surface-500"
-                  >
-                    <i class="pi pi-calendar" style="font-size: 0.7rem" />
-                    {{ formatPeriod(item.period_from, item.period_to) }}
-                  </span>
-                  <div class="flex items-center gap-2">
-                    <Button
-                      v-if="hasExternalLink(item)"
-                      label="ページを見る"
-                      icon="pi pi-external-link"
-                      icon-pos="right"
-                      size="small"
-                      variant="outlined"
-                      @click.stop="openExternalLink(item)"
-                    />
-                    <Button
-                      label="詳細を見る"
-                      icon="pi pi-arrow-right"
-                      icon-pos="right"
-                      size="small"
-                      variant="outlined"
-                      @click.stop="handleItemClick(item)"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <template #grid="{ items }">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            <div
-              v-for="item in items"
-              :key="item.slug"
-              class="flex flex-col bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg overflow-hidden hover:shadow-md transition-all cursor-pointer"
-              @click="handleItemClick(item)"
-            >
-              <img
-                :src="item.thumbnail"
-                :alt="`${item.title}のサムネイル`"
-                class="w-full h-40 object-cover"
-              />
-              <div class="flex flex-col flex-1 gap-2 p-4">
-                <div class="flex flex-wrap gap-1">
-                  <Badge
-                    v-for="cat in item.category"
-                    :key="cat"
-                    :value="cat"
-                    severity="info"
-                    class="text-xs"
-                  />
-                </div>
-                <span
-                  class="text-sm font-semibold text-surface-900 dark:text-surface-50 leading-snug"
-                >
-                  {{ item.title }}
-                </span>
-                <p
-                  class="text-xs text-surface-500 dark:text-surface-400 leading-relaxed line-clamp-3"
-                >
-                  {{ item.summary }}
-                </p>
-                <div class="flex flex-wrap gap-1 mt-auto pt-1">
-                  <Badge
-                    v-for="stack in limitedStacks(item)"
-                    :key="stack"
-                    :value="stack"
-                    severity="secondary"
-                    class="text-xs"
-                  />
-                  <Badge
-                    v-if="extraStackCount(item) > 0"
-                    :value="`+${extraStackCount(item)}`"
-                    severity="secondary"
-                    class="text-xs"
-                  />
-                </div>
-                <span
-                  class="text-xs text-surface-400 dark:text-surface-500 flex items-center gap-1"
-                >
-                  <i class="pi pi-calendar" style="font-size: 0.65rem" />
-                  {{ formatPeriod(item.period_from, item.period_to) }}
-                </span>
-                <div class="flex items-center gap-2 pt-1">
-                  <Button
-                    v-if="hasExternalLink(item)"
-                    label="ページを見る"
-                    icon="pi pi-external-link"
-                    icon-pos="right"
-                    size="small"
-                    variant="outlined"
-                    class="flex-1"
-                    @click.stop="openExternalLink(item)"
-                  />
-                  <Button
-                    label="詳細を見る"
-                    icon="pi pi-arrow-right"
-                    icon-pos="right"
-                    size="small"
-                    variant="outlined"
-                    class="flex-1"
-                    @click.stop="handleItemClick(item)"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
-
-        <template #empty>
-          <div
-            class="flex items-center justify-center py-12 text-surface-400 dark:text-surface-500 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-          >
-            <span>該当するプロジェクトが見つかりません</span>
-          </div>
-        </template>
-      </DataView>
-    </main>
-
-    <PortfolioDetailDrawer v-model:visible="detailVisible" :item="selectedItem" />
+    <div class="relative overflow-x-hidden">
+      <Transition :name="transitionName" mode="out-in">
+        <SectionPortfolio v-if="navStore.currentSection === 'portfolio'" key="portfolio" />
+        <SectionProfile v-else-if="navStore.currentSection === 'profile'" key="profile" />
+        <SectionGitHub v-else key="github" />
+      </Transition>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.slide-left-enter-from {
+  transform: translateX(40px);
+  opacity: 0;
+}
+.slide-left-leave-to {
+  transform: translateX(-40px);
+  opacity: 0;
+}
+
+.slide-right-enter-from {
+  transform: translateX(-40px);
+  opacity: 0;
+}
+.slide-right-leave-to {
+  transform: translateX(40px);
+  opacity: 0;
+}
+</style>
