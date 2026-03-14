@@ -1,94 +1,157 @@
 <script setup lang="ts">
-import type { PortfolioScreenshot } from '@/types/portfolio'
+import { useResizeObserver } from '@vueuse/core'
+import { usePortfolioStore } from '@/stores/portfolio'
 
-const props = defineProps<{
-  visible: boolean
-  screenshots: PortfolioScreenshot[]
-  activeIndex: number
-}>()
+const portfolioStore = usePortfolioStore()
 
-const emit = defineEmits<{
-  'update:visible': [value: boolean]
-  'update:activeIndex': [value: number]
-}>()
+const containerRef = ref<HTMLDivElement | null>(null)
+const containerWidth = ref(600)
+const displayX = ref(0)
+const isTransitioning = ref(false)
 
-const internalVisible = computed({
-  get: () => props.visible,
-  set: (val: boolean) => emit('update:visible', val),
+const screenshots = computed(() => portfolioStore.selectedItem?.screenshots ?? [])
+const total = computed(() => screenshots.value.length)
+
+useResizeObserver(containerRef, ([entry]) => {
+  const w = entry?.contentRect.width ?? 0
+  if (w > 0) {
+    containerWidth.value = w
+    snapToIndex(portfolioStore.screenshotActiveIndex, w)
+  }
 })
 
-const internalActiveIndex = computed({
-  get: () => props.activeIndex,
-  set: (val: number) => emit('update:activeIndex', val),
-})
+watch(
+  () => portfolioStore.screenshotVisible,
+  (visible) => {
+    if (visible) {
+      nextTick(() => {
+        const w = containerRef.value?.offsetWidth ?? containerWidth.value
+        if (w > 0) containerWidth.value = w
+        snapToIndex(portfolioStore.screenshotActiveIndex, containerWidth.value)
+      })
+    }
+  },
+)
 
-function prev(): void {
-  const len = props.screenshots.length
-  internalActiveIndex.value = (internalActiveIndex.value - 1 + len) % len
+watch(
+  () => portfolioStore.screenshotActiveIndex,
+  (idx) => {
+    goTo(idx)
+  },
+)
+
+function snapToIndex(idx: number, w = containerWidth.value): void {
+  isTransitioning.value = false
+  displayX.value = -idx * w
 }
 
-function next(): void {
-  const len = props.screenshots.length
-  internalActiveIndex.value = (internalActiveIndex.value + 1) % len
+function goTo(idx: number): void {
+  isTransitioning.value = true
+  displayX.value = -idx * containerWidth.value
 }
 
-const currentItem = computed(() => props.screenshots[internalActiveIndex.value] ?? null)
+// Drag state
+let isDragging = false
+let pointerStartX = 0
+let dragBaseX = 0
+
+function onPointerDown(e: PointerEvent): void {
+  isDragging = true
+  isTransitioning.value = false
+  pointerStartX = e.clientX
+  dragBaseX = displayX.value
+  ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+}
+
+function onPointerMove(e: PointerEvent): void {
+  if (!isDragging) return
+  displayX.value = dragBaseX + (e.clientX - pointerStartX)
+}
+
+function onPointerUp(e: PointerEvent): void {
+  if (!isDragging) return
+  isDragging = false
+  const delta = e.clientX - pointerStartX
+  const threshold = containerWidth.value * 0.2
+  const idx = portfolioStore.screenshotActiveIndex
+  let newIndex = idx
+  if (delta < -threshold && idx < total.value - 1) newIndex = idx + 1
+  else if (delta > threshold && idx > 0) newIndex = idx - 1
+  portfolioStore.screenshotActiveIndex = newIndex
+  isTransitioning.value = true
+  displayX.value = -newIndex * containerWidth.value
+}
 </script>
 
 <template>
   <Drawer
-    v-model:visible="internalVisible"
+    :visible="portfolioStore.screenshotVisible"
     position="left"
-    style="width: min(95vw, 700px)"
+    style="width: min(95vw, 860px)"
     :pt="{ pcCloseButton: { root: { class: 'cursor-target' } } }"
+    @update:visible="(v) => !v && portfolioStore.closeScreenshot()"
   >
     <template #header>
       <div class="flex items-center gap-2">
         <i class="pi pi-images text-primary-500" />
         <span class="font-bold text-surface-800 dark:text-surface-100">スクリーンショット</span>
-        <span class="text-sm text-surface-400 dark:text-surface-500 ml-1">
-          {{ internalActiveIndex + 1 }} / {{ screenshots.length }}
+        <span v-if="total > 0" class="text-sm text-surface-400 dark:text-surface-500 ml-1">
+          {{ portfolioStore.screenshotActiveIndex + 1 }} / {{ total }}
         </span>
       </div>
     </template>
 
-    <div v-if="currentItem" class="flex flex-col gap-4 h-full">
-      <!-- メイン画像エリア -->
-      <div class="relative flex items-center justify-center bg-surface-100 dark:bg-surface-800 rounded-lg overflow-hidden" style="height: 420px">
-        <img
-          :src="currentItem.itemImageSrc"
-          :alt="currentItem.alt"
-          class="max-w-full max-h-full object-contain"
-        />
-        <!-- 前へ/次へボタン -->
-        <button
-          v-if="screenshots.length > 1"
-          class="cursor-target absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
-          @click="prev"
+    <div v-if="total > 0" class="flex flex-col gap-4 h-full select-none">
+      <!-- カルーセル -->
+      <div
+        ref="containerRef"
+        class="relative overflow-hidden bg-surface-100 dark:bg-surface-800 flex-1 min-h-0"
+        @pointerdown="onPointerDown"
+        @pointermove="onPointerMove"
+        @pointerup="onPointerUp"
+        @pointercancel="onPointerUp"
+      >
+        <div
+          class="flex h-full"
+          :style="{
+            width: `${total * containerWidth}px`,
+            transform: `translateX(${displayX}px)`,
+            transition: isTransitioning ? 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+            willChange: 'transform',
+            cursor: isDragging ? 'grabbing' : 'grab',
+          }"
         >
-          <i class="pi pi-chevron-left" />
-        </button>
-        <button
-          v-if="screenshots.length > 1"
-          class="cursor-target absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
-          @click="next"
-        >
-          <i class="pi pi-chevron-right" />
-        </button>
+          <div
+            v-for="(ss, i) in screenshots"
+            :key="i"
+            class="flex items-center justify-center shrink-0 h-full"
+            :style="{ width: `${containerWidth}px` }"
+          >
+            <img
+              :src="ss.itemImageSrc"
+              :alt="ss.alt ?? ''"
+              class="max-w-full max-h-full object-contain pointer-events-none"
+              draggable="false"
+            />
+          </div>
+        </div>
       </div>
 
-      <!-- サムネイル一覧 -->
-      <div v-if="screenshots.length > 1" class="flex gap-2 flex-wrap">
+      <!-- サムネイルナビゲーション -->
+      <div v-if="total > 1" class="flex justify-center gap-2 flex-wrap pb-24">
         <img
-          v-for="(ss, index) in screenshots"
+          v-for="(ss, i) in screenshots"
           :key="ss.thumbnailImageSrc"
           :src="ss.thumbnailImageSrc"
-          :alt="ss.alt"
-          class="cursor-target h-16 w-24 object-cover rounded cursor-pointer transition-all"
-          :class="index === internalActiveIndex
-            ? 'ring-2 ring-primary-500 opacity-100'
-            : 'opacity-60 hover:opacity-100'"
-          @click="internalActiveIndex = index"
+          :alt="ss.alt ?? ''"
+          class="cursor-target h-16 w-24 object-cover cursor-pointer transition-all duration-200"
+          :class="
+            i === portfolioStore.screenshotActiveIndex
+              ? 'ring-2 ring-primary-500 opacity-100'
+              : 'opacity-50 hover:opacity-80'
+          "
+          draggable="false"
+          @click="portfolioStore.screenshotActiveIndex = i"
         />
       </div>
     </div>

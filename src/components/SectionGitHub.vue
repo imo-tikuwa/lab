@@ -323,15 +323,15 @@ const lineOptions = computed(() => ({
     <!-- ローディング -->
     <template v-if="loading">
       <div class="flex flex-wrap gap-1.5 mb-6">
-        <Skeleton v-for="n in 9" :key="n" width="68px" height="32px" border-radius="4px" />
+        <Skeleton v-for="n in 9" :key="n" width="68px" height="32px" border-radius="2px" />
       </div>
       <div class="grid grid-cols-3 gap-4 mb-6">
-        <Skeleton v-for="n in 3" :key="n" height="80px" border-radius="8px" />
+        <Skeleton v-for="n in 3" :key="n" height="80px" border-radius="2px" />
       </div>
-      <Skeleton height="80px" border-radius="8px" class="mb-6" />
+      <Skeleton height="80px" border-radius="2px" class="mb-6" />
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Skeleton height="384px" border-radius="8px" />
-        <Skeleton height="384px" border-radius="8px" />
+        <Skeleton height="384px" border-radius="2px" />
+        <Skeleton height="384px" border-radius="2px" />
       </div>
     </template>
 
@@ -370,7 +370,7 @@ const lineOptions = computed(() => ({
           v-for="item in summaryItems"
           :key="item.label"
           :spotlight-color="spotlightColor"
-          class="cursor-target bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 rounded-lg hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors"
+          class="cursor-target bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors"
         >
           <div class="p-4 flex flex-col gap-2">
             <div class="flex items-center gap-2 text-surface-400 dark:text-surface-500">
@@ -389,7 +389,7 @@ const lineOptions = computed(() => ({
       <SpotlightCard
         v-if="languageProfileData.length > 0"
         :spotlight-color="spotlightColor"
-        class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 rounded-lg hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors mb-6"
+        class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors mb-6"
       >
         <div class="p-5">
           <div class="flex items-center gap-2 mb-4">
@@ -429,7 +429,7 @@ const lineOptions = computed(() => ({
         <!-- 年別コミット推移チャート -->
         <SpotlightCard
           :spotlight-color="spotlightColor"
-          class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 rounded-lg hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors"
+          class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors"
         >
           <div class="p-5">
             <div class="flex items-center gap-2 mb-4">
@@ -453,7 +453,7 @@ const lineOptions = computed(() => ({
         <!-- 月別コントリビューション数 -->
         <SpotlightCard
           :spotlight-color="spotlightColor"
-          class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 rounded-lg hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors"
+          class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors"
         >
           <div class="p-5">
             <div class="flex items-center gap-2 mb-4">

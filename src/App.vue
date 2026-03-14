@@ -3,7 +3,6 @@ import { useColorMode } from '@/composables/color-mode'
 import type { ColorMode } from '@/composables/color-mode'
 
 import { usePageNavStore, PAGE_SECTION_ORDER } from '@/stores/page-nav'
-import type { PageSection } from '@/stores/page-nav'
 import { useThemeStore } from '@/stores/theme'
 import { COLOR_THEMES, applyPrimaryColor } from '@/theme'
 
@@ -16,13 +15,26 @@ onMounted(() => {
   applyPrimaryColor(themeStore.primaryColor)
 })
 
-type NavItem = { key: PageSection; label: string; icon: string }
-
-const navItems: NavItem[] = [
-  { key: 'portfolio', label: 'ポートフォリオ', icon: 'pi pi-th-large' },
-  { key: 'profile', label: 'プロフ', icon: 'pi pi-user' },
-  { key: 'github', label: '草', icon: 'pi pi-github' },
-]
+const dockItems = computed(() => [
+  {
+    icon: () => h('i', { class: 'pi pi-th-large text-lg text-surface-600 dark:text-surface-200' }),
+    label: 'ポートフォリオ',
+    onClick: () => navStore.navigate('portfolio'),
+    className: `cursor-target${navStore.currentSection === 'portfolio' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
+  },
+  {
+    icon: () => h('i', { class: 'pi pi-user text-lg text-surface-600 dark:text-surface-200' }),
+    label: 'プロフ',
+    onClick: () => navStore.navigate('profile'),
+    className: `cursor-target${navStore.currentSection === 'profile' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
+  },
+  {
+    icon: () => h('i', { class: 'pi pi-github text-lg text-surface-600 dark:text-surface-200' }),
+    label: '統計',
+    onClick: () => navStore.navigate('github'),
+    className: `cursor-target${navStore.currentSection === 'github' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
+  },
+])
 
 const transitionName = computed(() => {
   const prev = PAGE_SECTION_ORDER[navStore.previousSection]
@@ -60,22 +72,7 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
       <span class="text-sm text-surface-400 dark:text-surface-500">imo-tikuwa's</span>
       <span class="text-sm font-bold text-surface-700 dark:text-surface-200">lab</span>
 
-      <nav class="flex-1 flex justify-center gap-1">
-        <button
-          v-for="item in navItems"
-          :key="item.key"
-          class="cursor-target flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors"
-          :class="
-            navStore.currentSection === item.key
-              ? 'text-primary-500 bg-primary-50 dark:bg-primary-950/40'
-              : 'text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800'
-          "
-          @click="navStore.navigate(item.key)"
-        >
-          <i :class="item.icon" style="font-size: 0.8rem" />
-          {{ item.label }}
-        </button>
-      </nav>
+      <div class="flex-1" />
 
       <!-- プライマリカラー切り替えスウォッチ -->
       <div class="flex items-center gap-1.5">
@@ -120,12 +117,20 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
       </div>
     </header>
 
-    <div class="relative overflow-x-hidden">
+    <div class="relative overflow-x-hidden pb-32" style="padding-bottom: calc(8rem + env(safe-area-inset-bottom))">
       <Transition :name="transitionName" mode="out-in">
         <SectionPortfolio v-if="navStore.currentSection === 'portfolio'" key="portfolio" />
         <SectionProfile v-else-if="navStore.currentSection === 'profile'" key="profile" />
         <SectionGitHub v-else key="github" />
       </Transition>
+    </div>
+
+    <!-- 画面下部固定 Dock ナビゲーション -->
+    <div
+      class="fixed bottom-0 left-0 right-0 z-50"
+      style="padding-bottom: env(safe-area-inset-bottom)"
+    >
+      <Dock :items="dockItems" />
     </div>
   </div>
 </template>

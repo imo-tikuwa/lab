@@ -2,14 +2,27 @@
 import { portfolioItems } from '@/data/portfolio-items'
 import type { PortfolioItem } from '@/types/portfolio'
 import { formatPeriod } from '@/utils/portfolio'
+import { useColorMode } from '@/composables/color-mode'
+import { useThemeStore } from '@/stores/theme'
+import { usePortfolioStore, type LayoutType } from '@/stores/portfolio'
+import { COLOR_THEMES } from '@/theme'
 
-type LayoutType = 'list' | 'grid'
+const portfolioStore = usePortfolioStore()
+const { isDark } = useColorMode()
+const themeStore = useThemeStore()
 
-const layout = ref<LayoutType>('list')
-const sortOrder = ref<1 | -1>(-1)
-const selectedCategory = ref('すべて')
-const detailVisible = ref(false)
-const selectedItem = ref<PortfolioItem | null>(null)
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+const spotlightColor = computed(() => {
+  const theme = COLOR_THEMES.find((t) => t.name === themeStore.primaryColor)
+  const hex = theme?.color ?? COLOR_THEMES[0]!.color
+  return isDark.value ? hexToRgba(hex, 0.15) : hexToRgba(hex, 0.22)
+})
 
 const categoryOptions = [
   'すべて',
@@ -27,19 +40,14 @@ const layoutOptions: { value: LayoutType; icon: string }[] = [
 
 const filteredItems = computed(() => {
   const items =
-    selectedCategory.value === 'すべて'
+    portfolioStore.selectedCategory === 'すべて'
       ? portfolioItems
-      : portfolioItems.filter((item) => item.category.includes(selectedCategory.value))
-  return [...items].sort((a, b) => a.period_from.localeCompare(b.period_from) * sortOrder.value)
+      : portfolioItems.filter((item) => item.category.includes(portfolioStore.selectedCategory))
+  return [...items].sort((a, b) => a.period_from.localeCompare(b.period_from) * portfolioStore.sortOrder)
 })
 
 function toggleSort(): void {
-  sortOrder.value = sortOrder.value === 1 ? -1 : 1
-}
-
-function handleItemClick(item: PortfolioItem): void {
-  selectedItem.value = item
-  detailVisible.value = true
+  portfolioStore.sortOrder = portfolioStore.sortOrder === 1 ? -1 : 1
 }
 
 function openExternalLink(item: PortfolioItem): void {
@@ -51,6 +59,12 @@ function openExternalLink(item: PortfolioItem): void {
 
 function hasExternalLink(item: PortfolioItem): boolean {
   return !!item.links?.some((l) => l.label === 'GitHub Pages')
+}
+
+function openItemScreenshots(item: PortfolioItem): void {
+  if (item.screenshots.length) {
+    portfolioStore.openScreenshotFor(item, 0)
+  }
 }
 
 function limitedStacks(item: PortfolioItem): string[] {
@@ -76,18 +90,24 @@ function extraStackCount(item: PortfolioItem): number {
 
 <template>
   <main class="max-w-screen-xl mx-auto px-6 py-8">
+    <div class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 px-5 py-5">
+    <div class="flex items-center gap-2 mb-4">
+      <i class="pi pi-th-large text-surface-400 dark:text-surface-500" />
+      <h2 class="text-base font-semibold text-surface-700 dark:text-surface-200">ポートフォリオ一覧</h2>
+      <span class="text-xs text-surface-400 dark:text-surface-500">{{ filteredItems.length }} 件</span>
+    </div>
     <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
       <div class="flex items-center gap-2 flex-1">
         <Button
-          :icon="sortOrder === 1 ? 'pi pi-sort-amount-up-alt' : 'pi pi-sort-amount-down-alt'"
-          :label="sortOrder === 1 ? '開始日: 古い順' : '開始日: 新しい順'"
+          :icon="portfolioStore.sortOrder === 1 ? 'pi pi-sort-amount-up-alt' : 'pi pi-sort-amount-down-alt'"
+          :label="portfolioStore.sortOrder === 1 ? '開始日: 古い順' : '開始日: 新しい順'"
           variant="outlined"
           size="small"
-          class="cursor-target !bg-white dark:!bg-surface-900"
+          class="cursor-target"
           @click="toggleSort"
         />
         <Select
-          v-model="selectedCategory"
+          v-model="portfolioStore.selectedCategory"
           :options="categoryOptions"
           size="small"
           class="cursor-target w-[190px]"
@@ -95,7 +115,7 @@ function extraStackCount(item: PortfolioItem): number {
       </div>
       <div class="cursor-target">
         <SelectButton
-          v-model="layout"
+          v-model="portfolioStore.layout"
           :options="layoutOptions"
           option-value="value"
           :allow-empty="false"
@@ -107,21 +127,35 @@ function extraStackCount(item: PortfolioItem): number {
       </div>
     </div>
 
-    <DataView :value="filteredItems" :layout="layout" data-key="slug">
+    <DataView :value="filteredItems" :layout="portfolioStore.layout" data-key="slug" :pt="{ content: { class: 'bg-transparent' } }">
       <template #list="{ items }">
         <div
-          class="flex flex-col divide-y divide-surface-200 dark:divide-surface-700 border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900"
+          class="flex flex-col gap-3"
         >
-          <div
+          <SpotlightCard
             v-for="item in items"
             :key="item.slug"
-            class="flex flex-col sm:flex-row gap-4 p-5 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
+            :spotlight-color="spotlightColor"
+            class="flex flex-col sm:flex-row gap-4 p-5 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm transition-all"
           >
-            <img
-              :src="item.thumbnail"
-              :alt="`${item.title}のサムネイル`"
-              class="w-full sm:w-44 h-28 object-cover rounded shrink-0"
-            />
+            <div
+              class="relative overflow-hidden rounded shrink-0 w-full sm:w-52 self-stretch"
+              :class="item.screenshots.length ? 'cursor-target cursor-pointer group' : ''"
+              @click.stop="openItemScreenshots(item)"
+            >
+              <img
+                :src="item.thumbnail"
+                :alt="`${item.title}のサムネイル`"
+                class="w-full h-full object-cover"
+                :class="item.screenshots.length ? 'transition-transform duration-300 group-hover:scale-110' : ''"
+              />
+              <div
+                v-if="item.screenshots.length"
+                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+              >
+                <i class="pi pi-search text-white text-xl drop-shadow" />
+              </div>
+            </div>
             <div class="flex flex-col flex-1 gap-2 min-w-0">
               <div class="flex items-start justify-between gap-3">
                 <div class="flex flex-col gap-1.5 min-w-0">
@@ -186,27 +220,41 @@ function extraStackCount(item: PortfolioItem): number {
                     size="small"
                     variant="outlined"
                     class="cursor-target"
-                    @click.stop="handleItemClick(item)"
+                    @click.stop="portfolioStore.openDetail(item)"
                   />
                 </div>
               </div>
             </div>
-          </div>
+          </SpotlightCard>
         </div>
       </template>
 
       <template #grid="{ items }">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          <div
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <SpotlightCard
             v-for="item in items"
             :key="item.slug"
-            class="flex flex-col bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg overflow-hidden hover:shadow-md transition-all"
+            :spotlight-color="spotlightColor"
+            class="flex flex-col bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm transition-all"
           >
-            <img
-              :src="item.thumbnail"
-              :alt="`${item.title}のサムネイル`"
-              class="w-full h-40 object-cover"
-            />
+            <div
+              class="relative overflow-hidden"
+              :class="item.screenshots.length ? 'cursor-target cursor-pointer group' : ''"
+              @click.stop="openItemScreenshots(item)"
+            >
+              <img
+                :src="item.thumbnail"
+                :alt="`${item.title}のサムネイル`"
+                class="w-full h-40 object-cover"
+                :class="item.screenshots.length ? 'transition-transform duration-300 group-hover:scale-110' : ''"
+              />
+              <div
+                v-if="item.screenshots.length"
+                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+              >
+                <i class="pi pi-search text-white text-xl drop-shadow" />
+              </div>
+            </div>
             <div class="flex flex-col flex-1 gap-2 p-4">
               <div class="flex flex-wrap gap-1">
                 <Badge
@@ -266,23 +314,25 @@ function extraStackCount(item: PortfolioItem): number {
                   size="small"
                   variant="outlined"
                   class="cursor-target flex-1"
-                  @click.stop="handleItemClick(item)"
+                  @click.stop="portfolioStore.openDetail(item)"
                 />
               </div>
             </div>
-          </div>
+          </SpotlightCard>
         </div>
       </template>
 
       <template #empty>
         <div
-          class="flex items-center justify-center py-12 text-surface-400 dark:text-surface-500 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          class="flex items-center justify-center py-12 text-surface-400 dark:text-surface-500"
         >
           <span>該当するプロジェクトが見つかりません</span>
         </div>
       </template>
     </DataView>
+    </div>
 
-    <PortfolioDetailDrawer v-model:visible="detailVisible" :item="selectedItem" />
+    <PortfolioDetailDrawer />
+    <ScreenshotDrawer />
   </main>
 </template>

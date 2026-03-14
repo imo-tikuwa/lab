@@ -14,6 +14,7 @@ declare module 'vue' {
     Badge: typeof import('primevue/badge')['default']
     Button: typeof import('primevue/button')['default']
     DataView: typeof import('primevue/dataview')['default']
+    Dock: typeof import('./../components/Dock.vue')['default']
     Drawer: typeof import('primevue/drawer')['default']
     Popover: typeof import('primevue/popover')['default']
     PortfolioDetailDrawer: typeof import('./../components/PortfolioDetailDrawer.vue')['default']

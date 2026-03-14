@@ -40,7 +40,7 @@ interface PopoverInstance {
 }
 
 const socialLinks = [
-  { href: 'https://x.com/imo-tikuwa', icon: 'pi pi-twitter', label: 'X / Twitter' },
+  { href: 'https://x.com/imo_tikuwa', icon: 'pi pi-twitter', label: 'X / Twitter' },
   { href: 'https://github.com/imo-tikuwa', icon: 'pi pi-github', label: 'GitHub' },
   { href: 'https://qiita.com/imo_tikuwa', icon: 'pi pi-pencil', label: 'Qiita' },
   { href: 'https://zenn.dev/imo_tikuwa', icon: 'pi pi-book', label: 'Zenn' },
@@ -110,7 +110,7 @@ onMounted(fetchArticles)
   <main class="max-w-screen-xl mx-auto px-6 py-8">
     <!-- プロフィールカード -->
     <div
-      class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 rounded-lg p-6 mb-8"
+      class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 p-6 mb-8"
     >
       <div class="flex flex-col sm:flex-row gap-6 items-start">
         <!-- アバター -->
@@ -180,7 +180,7 @@ onMounted(fetchArticles)
 
     <!-- 記事・スクラップ一覧 -->
     <div
-      class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm rounded-lg border border-surface-200/60 dark:border-surface-700/60 px-6 py-5"
+      class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 px-6 py-5"
     >
       <!-- ヘッダー行：タイトル左 / フィルター右（デスクトップ） -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
@@ -260,7 +260,7 @@ onMounted(fetchArticles)
 
       <!-- ローディング スケルトン -->
       <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <Skeleton v-for="n in 9" :key="n" height="116px" border-radius="8px" />
+        <Skeleton v-for="n in 9" :key="n" height="116px" border-radius="2px" />
       </div>
 
       <!-- 記事グリッド -->
@@ -269,7 +269,7 @@ onMounted(fetchArticles)
           v-for="article in filteredArticles"
           :key="article.id"
           :spotlight-color="spotlightColor"
-          class="cursor-target bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm transition-all"
+          class="cursor-target bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm transition-all"
         >
           <a
             :href="article.url"
@@ -311,7 +311,7 @@ onMounted(fetchArticles)
       <!-- 空状態 -->
       <div
         v-if="!loading && filteredArticles.length === 0"
-        class="flex items-center justify-center py-12 text-surface-400 dark:text-surface-500 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg"
+        class="flex items-center justify-center py-12 text-surface-400 dark:text-surface-500 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
       >
         <span class="text-sm">該当する記事が見つかりません</span>
       </div>

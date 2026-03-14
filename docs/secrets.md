@@ -14,6 +14,7 @@ Settings → Secrets and variables → Actions
 | `PRIVATE_REPO_TOKEN` | Secret | fine-grained PAT。lab: Contents Write / 各ツールリポジトリ: Contents Read |
 | `VITE_RPGSAVE_EDITOR_GA4_MEASUREMENT_ID` | Secret | rpgsave-editor の GA4 測定 ID |
 | `VITE_SHIREN6_PRICE_HELPER_GA4_MEASUREMENT_ID` | Secret | shiren6-price-helper の GA4 測定 ID |
+| `GH_STATS_TOKEN` | Secret | fine-grained PAT。`scripts/fetch-github-stats.js` 実行用。未設定時は `GITHUB_TOKEN`（Actions 自動提供）にフォールバックし、公開リポジトリのみ取得。 |
 
 ---
 
