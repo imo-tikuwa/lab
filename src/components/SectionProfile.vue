@@ -39,6 +39,98 @@ interface PopoverInstance {
   toggle: (event: MouseEvent) => void
 }
 
+interface SkillBadge {
+  label: string
+  secondary?: true
+}
+
+interface SkillCategory {
+  label: string
+  items: SkillBadge[]
+}
+
+const skillCategories: SkillCategory[] = [
+  {
+    label: '言語',
+    items: [
+      { label: 'TypeScript' },
+      { label: 'PHP', secondary: true },
+      { label: 'Node.js' },
+      { label: 'Java', secondary: true },
+      { label: 'Ruby', secondary: true },
+      { label: 'Python', secondary: true },
+    ],
+  },
+  {
+    label: 'FW',
+    items: [
+      { label: 'Vue 3' },
+      { label: 'Nuxt' },
+      { label: 'Laravel', secondary: true },
+      { label: 'CakePHP', secondary: true },
+      { label: 'CodeIgniter', secondary: true },
+      { label: 'Rails', secondary: true },
+      { label: 'Electron', secondary: true },
+    ],
+  },
+  {
+    label: 'DB',
+    items: [
+      { label: 'MySQL' },
+      { label: 'PostgreSQL', secondary: true },
+    ],
+  },
+  {
+    label: 'インフラ',
+    items: [
+      { label: 'Docker' },
+      { label: 'AWS' },
+    ],
+  },
+  {
+    label: 'OS',
+    items: [
+      { label: 'Ubuntu' },
+      { label: 'AL2023' },
+      { label: 'AlmaLinux' },
+      { label: 'Debian' },
+      { label: 'Amazon Linux 2', secondary: true },
+      { label: 'CentOS', secondary: true },
+    ],
+  },
+  {
+    label: 'エディタ',
+    items: [
+      { label: 'VSCode' },
+      { label: 'Eclipse', secondary: true },
+      { label: 'Visual Studio', secondary: true },
+    ],
+  },
+  {
+    label: 'VCS',
+    items: [
+      { label: 'GitHub' },
+      { label: 'GitLab' },
+      { label: 'BitBucket', secondary: true },
+      { label: 'SVN', secondary: true },
+      { label: 'CVS', secondary: true },
+    ],
+  },
+  {
+    label: 'ツール',
+    items: [
+      { label: 'Slack' },
+      { label: 'WSL2' },
+      { label: 'A5M2' },
+      { label: 'Backlog', secondary: true },
+      { label: 'Zoom', secondary: true },
+    ],
+  },
+]
+
+const skillCategoriesLeft = skillCategories.slice(0, 4)
+const skillCategoriesRight = skillCategories.slice(4)
+
 const socialLinks = [
   { href: 'https://x.com/imo_tikuwa', icon: 'pi pi-twitter', label: 'X / Twitter' },
   { href: 'https://github.com/imo-tikuwa', icon: 'pi pi-github', label: 'GitHub' },
@@ -147,31 +239,67 @@ onMounted(fetchArticles)
 
           <!-- スキルセット -->
           <div class="flex flex-col gap-2">
-            <div class="flex flex-wrap gap-1.5 items-center">
-              <span
-                class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 w-[4.5rem]"
-                >日常的に使用</span
-              >
-              <Badge
-                v-for="skill in ['Vue 3', 'Nuxt', 'TypeScript', 'Docker', 'AWS']"
-                :key="skill"
-                :value="skill"
-                severity="info"
-                class="text-xs"
-              />
+            <!-- 凡例 -->
+            <div class="flex items-center gap-4 text-xs text-surface-500 dark:text-surface-400">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 bg-primary-500 shrink-0 inline-block" />
+                日常的に使用中
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span
+                  class="w-2.5 h-2.5 bg-surface-300 dark:bg-surface-600 shrink-0 inline-block"
+                />
+                過去経験あり
+              </span>
             </div>
-            <div class="flex flex-wrap gap-1.5 items-center">
-              <span
-                class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 w-[4.5rem]"
-                >経験あり</span
-              >
-              <Badge
-                v-for="skill in ['PHP', 'Laravel', 'Java', 'MySQL', 'PostgreSQL', 'Node.js', 'Electron']"
-                :key="skill"
-                :value="skill"
-                severity="secondary"
-                class="text-xs"
+
+            <div class="flex flex-col lg:flex-row">
+              <!-- 左: 言語・FW・DB・インフラ -->
+              <div class="flex flex-col gap-2 flex-1 min-w-0">
+                <div
+                  v-for="cat in skillCategoriesLeft"
+                  :key="cat.label"
+                  class="flex flex-wrap gap-1.5 items-center"
+                >
+                  <span
+                    class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 w-[4.5rem]"
+                    >{{ cat.label }}</span
+                  >
+                  <Badge
+                    v-for="badge in cat.items"
+                    :key="badge.label"
+                    :value="badge.label"
+                    :severity="badge.secondary ? 'secondary' : undefined"
+                    class="text-xs"
+                  />
+                </div>
+              </div>
+
+              <!-- 仕切り線 -->
+              <div
+                class="hidden lg:block w-px mx-5 self-stretch bg-surface-200 dark:bg-surface-700 shrink-0"
               />
+
+              <!-- 右: OS・エディタ・VCS・ツール -->
+              <div class="flex flex-col gap-2 flex-1 min-w-0 mt-2 lg:mt-0">
+                <div
+                  v-for="cat in skillCategoriesRight"
+                  :key="cat.label"
+                  class="flex flex-wrap gap-1.5 items-center"
+                >
+                  <span
+                    class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 w-[4.5rem]"
+                    >{{ cat.label }}</span
+                  >
+                  <Badge
+                    v-for="badge in cat.items"
+                    :key="badge.label"
+                    :value="badge.label"
+                    :severity="badge.secondary ? 'secondary' : undefined"
+                    class="text-xs"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -201,7 +329,8 @@ onMounted(fetchArticles)
               v-for="tag in selectedTags.slice(0, 5)"
               :key="tag"
               class="text-xs text-primary-500 dark:text-primary-400"
-            >#{{ tag }}</span>
+              >#{{ tag }}</span
+            >
             <span
               v-if="selectedTags.length > 5"
               class="text-xs text-surface-400 dark:text-surface-500"
@@ -250,7 +379,11 @@ onMounted(fetchArticles)
               <span class="truncate">{{ tag.name }}</span>
               <span
                 class="shrink-0 tabular-nums text-[0.65rem]"
-                :class="selectedTags.includes(tag.name) ? 'text-white/70' : 'text-surface-400 dark:text-surface-500'"
+                :class="
+                  selectedTags.includes(tag.name)
+                    ? 'text-white/70'
+                    : 'text-surface-400 dark:text-surface-500'
+                "
                 >{{ tag.count }}</span
               >
             </button>
@@ -297,7 +430,8 @@ onMounted(fetchArticles)
                 v-for="tag in article.tags.slice(0, 3)"
                 :key="tag"
                 class="text-xs text-primary-500 dark:text-primary-400"
-              >#{{ tag }}</span>
+                >#{{ tag }}</span
+              >
               <span
                 v-if="article.tags.length > 3"
                 class="text-xs text-surface-400 dark:text-surface-500"

@@ -18,16 +18,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
 
       # lab のランディングページをビルド
       - name: Setup Node.js (lab)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -52,9 +52,9 @@ jobs:
 
       # rpgsave-editor のビルド
       - name: Setup Node.js (rpgsave-editor)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: pages/rpgsave-editor/package-lock.json
 
@@ -73,9 +73,9 @@ jobs:
 
       # shiren6-price-helper のビルド
       - name: Setup Node.js (shiren6-price-helper)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
           cache-dependency-path: pages/shiren6-price-helper/package-lock.json
 
@@ -93,7 +93,7 @@ jobs:
         run: cp -r pages/shiren6-price-helper/dist site/shiren6-price-helper
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: site
 

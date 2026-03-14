@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export type PageSection = 'portfolio' | 'profile' | 'github'
+export type PageSection = 'portfolio' | 'timeline' | 'profile' | 'github'
 
 export const PAGE_SECTION_ORDER: Record<PageSection, number> = {
   portfolio: 0,
-  profile: 1,
-  github: 2,
+  timeline: 1,
+  profile: 2,
+  github: 3,
 }
 
 export const usePageNavStore = defineStore(

@@ -23,6 +23,12 @@ const dockItems = computed(() => [
     className: `cursor-target${navStore.currentSection === 'portfolio' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
   },
   {
+    icon: () => h('i', { class: 'pi pi-history text-lg text-surface-600 dark:text-surface-200' }),
+    label: 'タイムライン',
+    onClick: () => navStore.navigate('timeline'),
+    className: `cursor-target${navStore.currentSection === 'timeline' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
+  },
+  {
     icon: () => h('i', { class: 'pi pi-user text-lg text-surface-600 dark:text-surface-200' }),
     label: 'プロフ',
     onClick: () => navStore.navigate('profile'),
@@ -117,9 +123,10 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
       </div>
     </header>
 
-    <div class="relative overflow-x-hidden pb-32" style="padding-bottom: calc(8rem + env(safe-area-inset-bottom))">
+    <div class="relative overflow-x-clip pb-32" style="padding-bottom: calc(8rem + env(safe-area-inset-bottom))">
       <Transition :name="transitionName" mode="out-in">
         <SectionPortfolio v-if="navStore.currentSection === 'portfolio'" key="portfolio" />
+        <SectionTimeline v-else-if="navStore.currentSection === 'timeline'" key="timeline" />
         <SectionProfile v-else-if="navStore.currentSection === 'profile'" key="profile" />
         <SectionGitHub v-else key="github" />
       </Transition>

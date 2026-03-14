@@ -22,6 +22,7 @@ declare module 'vue' {
     SectionGitHub: typeof import('./../components/SectionGitHub.vue')['default']
     SectionPortfolio: typeof import('./../components/SectionPortfolio.vue')['default']
     SectionProfile: typeof import('./../components/SectionProfile.vue')['default']
+    SectionTimeline: typeof import('./../components/SectionTimeline.vue')['default']
     Select: typeof import('primevue/select')['default']
     SelectButton: typeof import('primevue/selectbutton')['default']
     Skeleton: typeof import('primevue/skeleton')['default']
