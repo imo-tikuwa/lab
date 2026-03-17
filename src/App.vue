@@ -19,25 +19,25 @@ const dockItems = computed(() => [
   {
     icon: () => h('i', { class: 'pi pi-th-large text-lg text-surface-600 dark:text-surface-200' }),
     label: 'ポートフォリオ',
-    onClick: () => navStore.navigate('portfolio'),
+    onClick: () => navigateTo('portfolio'),
     className: `cursor-target${navStore.currentSection === 'portfolio' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
   },
   {
     icon: () => h('i', { class: 'pi pi-history text-lg text-surface-600 dark:text-surface-200' }),
     label: 'タイムライン',
-    onClick: () => navStore.navigate('timeline'),
+    onClick: () => navigateTo('timeline'),
     className: `cursor-target${navStore.currentSection === 'timeline' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
   },
   {
     icon: () => h('i', { class: 'pi pi-user text-lg text-surface-600 dark:text-surface-200' }),
     label: 'プロフ',
-    onClick: () => navStore.navigate('profile'),
+    onClick: () => navigateTo('profile'),
     className: `cursor-target${navStore.currentSection === 'profile' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
   },
   {
     icon: () => h('i', { class: 'pi pi-github text-lg text-surface-600 dark:text-surface-200' }),
     label: '統計',
-    onClick: () => navStore.navigate('github'),
+    onClick: () => navigateTo('github'),
     className: `cursor-target${navStore.currentSection === 'github' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
   },
 ])
@@ -60,6 +60,11 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
 
 // タッチデバイス判定（スマホ・タブレット等の pointer: coarse デバイス）
 const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
+
+function navigateTo(section: Parameters<typeof navStore.navigate>[0]): void {
+  navStore.navigate(section)
+  if (isTouchDevice) window.scrollTo(0, 0)
+}
 </script>
 
 <template>

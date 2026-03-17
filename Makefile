@@ -27,9 +27,18 @@
 #     read -rsp "GH_STATS_TOKEN: " GH_STATS_TOKEN && echo && \
 #       GH_STATS_TOKEN=$GH_STATS_TOKEN node scripts/fetch-github-stats.js
 #
+#
+# [実機確認（スマホ）]
+#   1. DevContainer で make preview-lab を起動しておく
+#   2. WSL2 側で make proxy を実行する（UAC プロンプトが出る）
+#   3. Ctrl+C で停止すると自動でプロキシも停止する（UAC プロンプトが出る）
+#
+#   前提: PC とスマホが同じ Wi-Fi に接続されていること。
+#   アクセス URL: http://<PCのWiFi IP>:5173/lab/
+#
 # ==============================================================================
 
-.PHONY: preview serve build build-lab build-submodules build-rpgsave-editor build-shiren6-price-helper preview-lab
+.PHONY: preview serve build build-lab build-submodules build-rpgsave-editor build-shiren6-price-helper preview-lab proxy
 
 SITE_DIR := /tmp/lab-site
 SERVE_DIR := /tmp/lab-serve
@@ -73,6 +82,11 @@ preview-lab: build-lab
 		echo "[preview-lab] shiren6-price-helper/dist なし - スキップ"; \
 	fi
 	$(MAKE) serve
+
+# スマホ実機確認用: WSL2→Windows のポートプロキシを開始し、Ctrl+C で自動停止する
+# ※ WSL2 側で実行すること。DevContainer で make preview-lab を起動済みであること。
+proxy:
+	-bash -c 'trap "bash scripts/proxy.sh stop" EXIT; bash scripts/proxy.sh start; echo ""; echo "プロキシ起動中 (port $(PORT))。Ctrl+C で停止します..."; sleep infinity'
 
 # 既存のビルド成果物をそのままプレビューサーバーで配信
 serve:

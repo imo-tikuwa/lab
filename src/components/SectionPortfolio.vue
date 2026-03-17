@@ -95,7 +95,7 @@ function extraStackCount(item: PortfolioItem): number {
             class="cursor-target shrink-0"
             @click="toggleSort"
           />
-          <Select v-model="portfolioStore.selectedCategory" :options="categoryOptions" size="small" class="cursor-target w-[190px] shrink-0" />
+          <Select v-model="portfolioStore.selectedCategory" :options="categoryOptions" size="small" class="cursor-target flex-1 sm:flex-none sm:w-[190px]" />
         </div>
         <div class="cursor-target hidden sm:flex">
           <SelectButton v-model="portfolioStore.layout" :options="layoutOptions" option-value="value" :allow-empty="false">

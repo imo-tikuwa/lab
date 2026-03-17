@@ -19,7 +19,7 @@ const hasStacks = computed(
   <Drawer
     :visible="portfolioStore.detailVisible"
     position="right"
-    style="width: min(95vw, 680px)"
+    style="width: min(90vw, 680px)"
     :pt="{ pcCloseButton: { root: { class: 'cursor-target' } } }"
     @update:visible="(v) => !v && portfolioStore.closeDetail()"
   >

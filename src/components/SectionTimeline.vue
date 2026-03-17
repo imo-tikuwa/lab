@@ -145,7 +145,7 @@ function stackCategories(item: TimelineItem): StackCategory[] {
                     <!-- 左: 技術スタック（カテゴリ別） -->
                     <div class="flex-1 min-w-0 space-y-1.5">
                       <div v-for="cat in stackCategories(item)" :key="cat.label" class="flex items-start gap-3">
-                        <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5">{{ cat.label }}</span>
+                        <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap min-w-[7rem] pt-0.5 mr-1">{{ cat.label }}</span>
                         <div class="flex flex-wrap gap-1">
                           <Badge v-for="stack in cat.items" :key="stack" :value="stack" severity="secondary" class="text-xs" />
                         </div>
@@ -153,7 +153,7 @@ function stackCategories(item: TimelineItem): StackCategory[] {
 
                       <!-- lg未満: 備考をスタック行と同じ書式で表示 -->
                       <div v-if="item.memo" class="lg:hidden flex items-start gap-3">
-                        <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5">備考</span>
+                        <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap min-w-[7rem] pt-0.5 mr-1">備考</span>
                         <p class="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
                           {{ item.memo }}
                         </p>
@@ -165,7 +165,7 @@ function stackCategories(item: TimelineItem): StackCategory[] {
                       <div class="hidden lg:block w-px mx-5 self-stretch bg-surface-200 dark:bg-surface-700 shrink-0" />
                       <div class="hidden lg:flex flex-col flex-1 min-w-0">
                         <div class="flex items-start gap-3">
-                          <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5">備考</span>
+                          <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap min-w-[7rem] pt-0.5 mr-1">備考</span>
                           <p class="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
                             {{ item.memo }}
                           </p>

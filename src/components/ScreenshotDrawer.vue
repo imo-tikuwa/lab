@@ -54,8 +54,12 @@ function goTo(idx: number): void {
 let isDragging = false
 let pointerStartX = 0
 let dragBaseX = 0
+let activePointerId: number | null = null
 
 function onPointerDown(e: PointerEvent): void {
+  if (activePointerId !== null) return
+  e.preventDefault()
+  activePointerId = e.pointerId
   isDragging = true
   isTransitioning.value = false
   pointerStartX = e.clientX
@@ -64,12 +68,13 @@ function onPointerDown(e: PointerEvent): void {
 }
 
 function onPointerMove(e: PointerEvent): void {
-  if (!isDragging) return
+  if (!isDragging || e.pointerId !== activePointerId) return
   displayX.value = dragBaseX + (e.clientX - pointerStartX)
 }
 
 function onPointerUp(e: PointerEvent): void {
-  if (!isDragging) return
+  if (!isDragging || e.pointerId !== activePointerId) return
+  activePointerId = null
   isDragging = false
   const delta = e.clientX - pointerStartX
   const threshold = containerWidth.value * 0.2
@@ -87,7 +92,7 @@ function onPointerUp(e: PointerEvent): void {
   <Drawer
     :visible="portfolioStore.screenshotVisible"
     position="left"
-    style="width: min(95vw, 860px)"
+    style="width: min(90vw, 860px)"
     :pt="{ pcCloseButton: { root: { class: 'cursor-target' } } }"
     @update:visible="(v) => !v && portfolioStore.closeScreenshot()"
   >
@@ -104,6 +109,7 @@ function onPointerUp(e: PointerEvent): void {
       <div
         ref="containerRef"
         class="relative overflow-hidden bg-surface-100 dark:bg-surface-800 flex-1 min-h-0 max-h-[40vh] sm:max-h-none"
+        style="touch-action: none"
         @pointerdown="onPointerDown"
         @pointermove="onPointerMove"
         @pointerup="onPointerUp"
@@ -127,14 +133,14 @@ function onPointerUp(e: PointerEvent): void {
 
       <!-- サムネイルナビゲーション -->
       <div v-if="total > 1" class="pb-24">
-        <div class="flex flex-nowrap sm:flex-wrap sm:justify-center gap-2 overflow-x-auto pb-2 sm:pb-0">
+        <div class="flex flex-nowrap sm:flex-wrap sm:justify-center gap-2 overflow-x-auto p-1 pb-2 sm:p-1">
           <img
             v-for="(ss, i) in screenshots"
             :key="ss.thumbnailImageSrc"
             :src="ss.thumbnailImageSrc"
             :alt="ss.alt ?? ''"
             class="cursor-target h-16 w-24 object-cover cursor-pointer transition-all duration-200 shrink-0"
-            :class="i === portfolioStore.screenshotActiveIndex ? 'ring-2 ring-primary-500 opacity-100' : 'opacity-50 hover:opacity-80'"
+            :class="i === portfolioStore.screenshotActiveIndex ? 'outline outline-2 outline-primary-500 opacity-100' : 'opacity-50 hover:opacity-80'"
             draggable="false"
             @click="portfolioStore.screenshotActiveIndex = i"
           />
