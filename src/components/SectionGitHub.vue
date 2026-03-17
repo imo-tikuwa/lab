@@ -72,10 +72,7 @@ const spotlightColor = computed(() => {
 
 const yearOptions = computed<{ label: string; value: YearFilter }[]>(() => {
   if (!stats.value) return []
-  return [
-    { label: '全期間', value: 'all' },
-    ...stats.value.years.map((y) => ({ label: String(y.year), value: y.year as YearFilter })),
-  ]
+  return [{ label: '全期間', value: 'all' }, ...stats.value.years.map((y) => ({ label: String(y.year), value: y.year as YearFilter }))]
 })
 
 const currentYearData = computed<YearStats | null>(() => {
@@ -90,10 +87,7 @@ const summaryItems = computed(() => {
   let contributions: number, issues: number, prs: number, period: string
 
   if (selectedYear.value === 'all') {
-    contributions = stats.value.years.reduce(
-      (s, y) => s + y.monthlyCommits.reduce((ms, v) => ms + v, 0),
-      0,
-    )
+    contributions = stats.value.years.reduce((s, y) => s + y.monthlyCommits.reduce((ms, v) => ms + v, 0), 0)
     issues = stats.value.years.reduce((s, y) => s + y.totalIssueContributions, 0)
     prs = stats.value.years.reduce((s, y) => s + y.totalPullRequestContributions, 0)
     const first = stats.value.years[0]!.year
@@ -130,11 +124,7 @@ const yearlyCommitChartData = computed(() => {
       {
         label: 'コミット数',
         data: years.map((y) => y.monthlyCommits.reduce((s, v) => s + v, 0)),
-        backgroundColor: years.map((y) =>
-          selectedYear.value === 'all' || y.year === selectedYear.value
-            ? primaryColor
-            : mutedColor,
-        ),
+        backgroundColor: years.map((y) => (selectedYear.value === 'all' || y.year === selectedYear.value ? primaryColor : mutedColor)),
         borderWidth: 0,
         borderRadius: 4,
       },
@@ -217,10 +207,7 @@ const languageProfileData = computed(() => {
 const monthlyChartData = computed(() => {
   if (!stats.value || stats.value.years.length === 0) return null
 
-  const monthLabels = [
-    '1月', '2月', '3月', '4月', '5月', '6月',
-    '7月', '8月', '9月', '10月', '11月', '12月',
-  ]
+  const monthLabels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
   const primaryTheme = COLOR_THEMES.find((t) => t.name === themeStore.primaryColor)
   const primaryColor = primaryTheme?.color ?? COLOR_THEMES[0]!.color
 
@@ -269,11 +256,7 @@ const monthlyChartData = computed(() => {
 
 const yearlyCommitChartTitle = '年別コントリビューション推移'
 
-const monthlyChartTitle = computed(() =>
-  selectedYear.value === 'all'
-    ? '月別コントリビューション数（直近2年）'
-    : `月別コントリビューション数 (${selectedYear.value}年)`,
-)
+const monthlyChartTitle = computed(() => (selectedYear.value === 'all' ? '月別コントリビューション数（直近2年）' : `月別コントリビューション数 (${selectedYear.value}年)`))
 
 // チャートオプション（ダークモード対応）
 const axisColor = computed(() => (isDark.value ? '#64748b' : '#94a3b8'))
@@ -296,8 +279,7 @@ const lineOptions = computed(() => ({
     legend: { position: 'bottom' as const, labels: squareLegendLabels.value },
     tooltip: {
       callbacks: {
-        label: (ctx: { dataset: { label?: string }; parsed: { y: number } }) =>
-          ` ${ctx.dataset.label ?? ''}: ${ctx.parsed.y}`,
+        label: (ctx: { dataset: { label?: string }; parsed: { y: number } }) => ` ${ctx.dataset.label ?? ''}: ${ctx.parsed.y}`,
       },
     },
   },
@@ -315,7 +297,6 @@ const lineOptions = computed(() => ({
     },
   },
 }))
-
 </script>
 
 <template>
@@ -325,7 +306,7 @@ const lineOptions = computed(() => ({
       <div class="flex flex-wrap gap-1.5 mb-6">
         <Skeleton v-for="n in 9" :key="n" width="68px" height="32px" border-radius="2px" />
       </div>
-      <div class="grid grid-cols-3 gap-4 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <Skeleton v-for="n in 3" :key="n" height="80px" border-radius="2px" />
       </div>
       <Skeleton height="80px" border-radius="2px" class="mb-6" />
@@ -348,36 +329,39 @@ const lineOptions = computed(() => ({
     <!-- データあり -->
     <template v-else>
       <!-- 年切り替えトグル -->
-      <div class="flex flex-wrap gap-1.5 mb-6">
-        <button
-          v-for="opt in yearOptions"
-          :key="String(opt.value)"
-          class="cursor-target px-3 py-1.5 rounded text-xs font-medium transition-colors"
-          :class="
-            selectedYear === opt.value
-              ? 'bg-primary-500 text-white'
-              : 'text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800'
-          "
-          @click="selectedYear = opt.value"
-        >
-          {{ opt.label }}
-        </button>
+      <div class="mb-6">
+        <div class="flex flex-nowrap sm:flex-wrap overflow-x-auto gap-1.5 pb-3 sm:pb-0">
+          <button
+            v-for="opt in yearOptions"
+            :key="String(opt.value)"
+            class="cursor-target px-3 py-1.5 rounded text-xs font-medium transition-colors whitespace-nowrap shrink-0"
+            :class="
+              selectedYear === opt.value
+                ? 'bg-primary-500 text-white'
+                : 'text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 hover:bg-surface-100 dark:hover:bg-surface-800'
+            "
+            @click="selectedYear = opt.value"
+          >
+            {{ opt.label }}
+          </button>
+        </div>
+        <p class="sm:hidden mt-1 text-xs text-surface-400 dark:text-surface-500">← 横にスクロールできます</p>
       </div>
 
       <!-- サマリーカード -->
-      <div class="grid grid-cols-3 gap-4 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <SpotlightCard
           v-for="item in summaryItems"
           :key="item.label"
           :spotlight-color="spotlightColor"
           class="cursor-target bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 hover:border-primary-400/60 dark:hover:border-primary-500/60 transition-colors"
         >
-          <div class="p-4 flex flex-col gap-2">
+          <div class="p-5 flex flex-col gap-2">
             <div class="flex items-center gap-2 text-surface-400 dark:text-surface-500">
               <i :class="item.icon" style="font-size: 0.85rem" />
               <span class="text-xs">{{ item.label }}</span>
             </div>
-            <span class="text-2xl font-bold text-surface-900 dark:text-surface-50 tabular-nums">
+            <span class="text-xl sm:text-2xl font-bold text-surface-900 dark:text-surface-50 tabular-nums">
               {{ item.value.toLocaleString() }}
             </span>
             <span class="text-xs text-surface-400 dark:text-surface-500">{{ item.period }}</span>
@@ -408,15 +392,8 @@ const lineOptions = computed(() => ({
           </div>
           <!-- 凡例 -->
           <div class="flex flex-wrap gap-x-5 gap-y-1.5">
-            <span
-              v-for="lang in languageProfileData"
-              :key="lang.name"
-              class="flex items-center gap-1.5 text-xs text-surface-600 dark:text-surface-400"
-            >
-              <span
-                class="w-2.5 h-2.5 rounded-sm shrink-0"
-                :style="{ backgroundColor: lang.color }"
-              />
+            <span v-for="lang in languageProfileData" :key="lang.name" class="flex items-center gap-1.5 text-xs text-surface-600 dark:text-surface-400">
+              <span class="w-2.5 h-2.5 rounded-sm shrink-0" :style="{ backgroundColor: lang.color }" />
               {{ lang.name }}
               <span class="text-surface-400 dark:text-surface-500">{{ lang.percent }}%</span>
             </span>
@@ -438,14 +415,8 @@ const lineOptions = computed(() => ({
                 {{ yearlyCommitChartTitle }}
               </h2>
             </div>
-            <div class="h-96">
-              <Chart
-                v-if="yearlyCommitChartData"
-                type="bar"
-                :data="yearlyCommitChartData"
-                :options="yearlyCommitChartOptions"
-                class="h-full"
-              />
+            <div class="h-64 sm:h-80 lg:h-96">
+              <Chart v-if="yearlyCommitChartData" type="bar" :data="yearlyCommitChartData" :options="yearlyCommitChartOptions" class="h-full" />
             </div>
           </div>
         </SpotlightCard>
@@ -462,14 +433,8 @@ const lineOptions = computed(() => ({
                 {{ monthlyChartTitle }}
               </h2>
             </div>
-            <div class="h-96">
-              <Chart
-                v-if="monthlyChartData"
-                type="line"
-                :data="monthlyChartData"
-                :options="lineOptions"
-                class="h-full"
-              />
+            <div class="h-64 sm:h-80 lg:h-96">
+              <Chart v-if="monthlyChartData" type="line" :data="monthlyChartData" :options="lineOptions" class="h-full" />
             </div>
           </div>
         </SpotlightCard>

@@ -27,12 +27,7 @@ const hasStacks = computed(
       <div class="flex flex-col gap-1.5">
         <span class="text-base font-bold text-surface-900 dark:text-surface-50 leading-snug">{{ portfolioStore.selectedItem?.title }}</span>
         <div class="flex flex-wrap gap-1">
-          <Badge
-            v-for="cat in portfolioStore.selectedItem?.category"
-            :key="cat"
-            :value="cat"
-            severity="info"
-          />
+          <Badge v-for="cat in portfolioStore.selectedItem?.category" :key="cat" :value="cat" severity="info" />
         </div>
       </div>
     </template>
@@ -40,11 +35,7 @@ const hasStacks = computed(
     <div v-if="portfolioStore.selectedItem" class="space-y-5">
       <!-- ヘッダー画像（全幅） -->
       <div class="overflow-hidden bg-surface-100 dark:bg-surface-800">
-        <img
-          :src="portfolioStore.selectedItem.thumbnail"
-          :alt="`${portfolioStore.selectedItem.title}のサムネイル`"
-          class="w-full"
-        />
+        <img :src="portfolioStore.selectedItem.thumbnail" :alt="`${portfolioStore.selectedItem.title}のサムネイル`" class="w-full" />
       </div>
 
       <!-- 2カラムセクション -->
@@ -56,11 +47,7 @@ const hasStacks = computed(
             <h3 class="font-bold text-surface-800 dark:text-surface-100">プロジェクト概要</h3>
           </div>
           <p class="text-sm text-surface-700 dark:text-surface-300 leading-relaxed mb-1">{{ portfolioStore.selectedItem.summary }}</p>
-          <p
-            v-for="(desc, i) in portfolioStore.selectedItem.descriptions"
-            :key="i"
-            class="text-sm text-surface-700 dark:text-surface-300 leading-relaxed"
-          >
+          <p v-for="(desc, i) in portfolioStore.selectedItem.descriptions" :key="i" class="text-sm text-surface-700 dark:text-surface-300 leading-relaxed">
             {{ desc }}
           </p>
         </div>
@@ -84,10 +71,7 @@ const hasStacks = computed(
               <i class="pi pi-images text-primary-500" />
               <h3 class="font-bold text-surface-800 dark:text-surface-100">スクリーンショット</h3>
             </div>
-            <div
-              class="cursor-target relative overflow-hidden rounded cursor-pointer group aspect-video"
-              @click="portfolioStore.openScreenshot(0)"
-            >
+            <div class="cursor-target relative overflow-hidden rounded cursor-pointer group aspect-video" @click="portfolioStore.openScreenshot(0)">
               <img
                 :src="portfolioStore.selectedItem.screenshots[0]!.thumbnailImageSrc"
                 :alt="portfolioStore.selectedItem.screenshots[0]!.alt"
@@ -161,14 +145,7 @@ const hasStacks = computed(
               <h3 class="font-bold text-surface-800 dark:text-surface-100">リンク</h3>
             </div>
             <div class="flex flex-col gap-2">
-              <a
-                v-for="link in portfolioStore.selectedItem.links"
-                :key="link.url"
-                :href="link.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="no-underline"
-              >
+              <a v-for="link in portfolioStore.selectedItem.links" :key="link.url" :href="link.url" target="_blank" rel="noopener noreferrer" class="no-underline">
                 <Button :label="link.label" icon="pi pi-external-link" icon-pos="right" class="cursor-target w-full" size="small" />
               </a>
             </div>
@@ -177,5 +154,4 @@ const hasStacks = computed(
       </div>
     </div>
   </Drawer>
-
 </template>

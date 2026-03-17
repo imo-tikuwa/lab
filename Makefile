@@ -7,7 +7,7 @@
 #   make preview-lab   lab のみ高速ビルドしてプレビュー起動（サブモジュールはビルド済み dist を流用）
 #
 # [アクセス]
-#   http://localhost:8080/lab/
+#   http://localhost:5173/lab/
 #
 # [データ取得スクリプト（ビルド前に自動実行）]
 #   node scripts/fetch-articles.js
@@ -33,7 +33,7 @@
 
 SITE_DIR := /tmp/lab-site
 SERVE_DIR := /tmp/lab-serve
-PORT := 8080
+PORT := 5173
 
 # ビルドしてからプレビューサーバーを起動
 preview: build serve

@@ -63,11 +63,7 @@ const drawGrid = () => {
       const squareX = x - (gridOffset.value.x % props.squareSize)
       const squareY = y - (gridOffset.value.y % props.squareSize)
 
-      if (
-        hoveredSquareRef.value &&
-        Math.floor((x - startX) / props.squareSize) === hoveredSquareRef.value.x &&
-        Math.floor((y - startY) / props.squareSize) === hoveredSquareRef.value.y
-      ) {
+      if (hoveredSquareRef.value && Math.floor((x - startX) / props.squareSize) === hoveredSquareRef.value.x && Math.floor((y - startY) / props.squareSize) === hoveredSquareRef.value.y) {
         ctx.fillStyle = props.hoverFillColor
         ctx.fillRect(squareX, squareY, props.squareSize, props.squareSize)
       }
@@ -77,14 +73,7 @@ const drawGrid = () => {
     }
   }
 
-  const gradient = ctx.createRadialGradient(
-    canvas.width / 2,
-    canvas.height / 2,
-    0,
-    canvas.width / 2,
-    canvas.height / 2,
-    Math.sqrt(canvas.width ** 2 + canvas.height ** 2) / 2,
-  )
+  const gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, Math.sqrt(canvas.width ** 2 + canvas.height ** 2) / 2)
   gradient.addColorStop(0, 'rgba(0, 0, 0, 0)')
   gradient.addColorStop(1, props.gradientColor)
 
@@ -134,11 +123,7 @@ const handleMouseMove = (event: MouseEvent) => {
   const hoveredSquareX = Math.floor((mouseX + gridOffset.value.x - startX) / props.squareSize)
   const hoveredSquareY = Math.floor((mouseY + gridOffset.value.y - startY) / props.squareSize)
 
-  if (
-    !hoveredSquareRef.value ||
-    hoveredSquareRef.value.x !== hoveredSquareX ||
-    hoveredSquareRef.value.y !== hoveredSquareY
-  ) {
+  if (!hoveredSquareRef.value || hoveredSquareRef.value.x !== hoveredSquareX || hoveredSquareRef.value.y !== hoveredSquareY) {
     hoveredSquareRef.value = { x: hoveredSquareX, y: hoveredSquareY }
   }
 }
@@ -185,18 +170,8 @@ onUnmounted(() => {
   cleanup()
 })
 
-watch(
-  [
-    () => props.direction,
-    () => props.speed,
-    () => props.borderColor,
-    () => props.hoverFillColor,
-    () => props.squareSize,
-    () => props.gradientColor,
-  ],
-  () => {
-    cleanup()
-    initializeCanvas()
-  },
-)
+watch([() => props.direction, () => props.speed, () => props.borderColor, () => props.hoverFillColor, () => props.squareSize, () => props.gradientColor], () => {
+  cleanup()
+  initializeCanvas()
+})
 </script>

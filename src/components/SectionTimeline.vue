@@ -75,14 +75,10 @@ function stackCategories(item: TimelineItem): StackCategory[] {
 
 <template>
   <main class="max-w-screen-xl mx-auto px-6 py-8">
-    <div
-      class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 px-5 py-5"
-    >
+    <div class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 p-5">
       <div class="flex items-center gap-2 mb-6">
         <i class="pi pi-history text-surface-400 dark:text-surface-500" />
-        <h2 class="text-base font-semibold text-surface-700 dark:text-surface-200">
-          キャリアタイムライン
-        </h2>
+        <h2 class="text-base font-semibold text-surface-700 dark:text-surface-200">キャリアタイムライン</h2>
         <span class="text-xs text-surface-400 dark:text-surface-500">{{ timelineItems.length }} 件</span>
       </div>
 
@@ -107,15 +103,10 @@ function stackCategories(item: TimelineItem): StackCategory[] {
 
         <!-- タイムライン本体 -->
         <div class="flex-1 min-w-0 space-y-10">
-          <section
-            v-for="[year, items] in groupedByYear"
-            :key="year"
-            :id="`timeline-year-${year}`"
-            class="scroll-mt-16"
-          >
+          <section v-for="[year, items] in groupedByYear" :key="year" :id="`timeline-year-${year}`" class="scroll-mt-16">
             <!-- 年見出し -->
             <div class="flex items-center gap-4 mb-5">
-              <span class="text-3xl font-bold font-mono text-surface-800 dark:text-surface-100">{{ year }}</span>
+              <span class="text-2xl sm:text-3xl font-bold font-mono text-surface-800 dark:text-surface-100">{{ year }}</span>
               <div class="flex-1 h-px bg-surface-200 dark:bg-surface-700" />
               <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0">{{ items.length }} 件</span>
             </div>
@@ -125,16 +116,14 @@ function stackCategories(item: TimelineItem): StackCategory[] {
               <motion.div
                 v-for="(item, i) in items"
                 :key="i"
-                class="relative pl-8"
+                class="relative pl-6 sm:pl-8"
                 :initial="{ opacity: 0, y: 16 }"
                 :while-in-view="{ opacity: 1, y: 0 }"
                 :transition="{ duration: 0.4, delay: i * 0.06 }"
                 :in-view-options="{ once: true }"
               >
                 <!-- マーカードット -->
-                <span
-                  class="absolute -left-2 top-5 w-3.5 h-3.5 rounded-full border-2 border-primary-400 dark:border-primary-500 bg-white dark:bg-surface-900 block"
-                />
+                <span class="absolute -left-2 top-5 w-3.5 h-3.5 rounded-full border-2 border-primary-400 dark:border-primary-500 bg-white dark:bg-surface-900 block" />
 
                 <!-- エントリーカード -->
                 <SpotlightCard
@@ -147,45 +136,27 @@ function stackCategories(item: TimelineItem): StackCategory[] {
                   </p>
 
                   <!-- 業務内容 -->
-                  <p
-                    v-if="item.note"
-                    class="mt-1.5 text-base font-semibold text-surface-800 dark:text-surface-100 leading-snug"
-                  >
+                  <p v-if="item.note" class="mt-1.5 text-base font-semibold text-surface-800 dark:text-surface-100 leading-snug">
                     {{ item.note }}
                   </p>
 
                   <!-- スタック + 備考（スタックと同じ縦位置から並べる） -->
-                  <div
-                    v-if="stackCategories(item).length > 0 || item.memo"
-                    class="mt-4 flex flex-col lg:flex-row"
-                  >
+                  <div v-if="stackCategories(item).length > 0 || item.memo" class="mt-4 flex flex-col lg:flex-row">
                     <!-- 左: 技術スタック（カテゴリ別） -->
                     <div class="flex-1 min-w-0 space-y-1.5">
-                      <div
-                        v-for="cat in stackCategories(item)"
-                        :key="cat.label"
-                        class="flex items-start gap-3"
-                      >
-                        <span
-                          class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5"
-                        >{{ cat.label }}</span>
+                      <div v-for="cat in stackCategories(item)" :key="cat.label" class="flex items-start gap-3">
+                        <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5">{{ cat.label }}</span>
                         <div class="flex flex-wrap gap-1">
-                          <Badge
-                            v-for="stack in cat.items"
-                            :key="stack"
-                            :value="stack"
-                            severity="secondary"
-                            class="text-xs"
-                          />
+                          <Badge v-for="stack in cat.items" :key="stack" :value="stack" severity="secondary" class="text-xs" />
                         </div>
                       </div>
 
                       <!-- lg未満: 備考をスタック行と同じ書式で表示 -->
                       <div v-if="item.memo" class="lg:hidden flex items-start gap-3">
-                        <span
-                          class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5"
-                        >備考</span>
-                        <p class="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">{{ item.memo }}</p>
+                        <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5">備考</span>
+                        <p class="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
+                          {{ item.memo }}
+                        </p>
                       </div>
                     </div>
 
@@ -194,10 +165,10 @@ function stackCategories(item: TimelineItem): StackCategory[] {
                       <div class="hidden lg:block w-px mx-5 self-stretch bg-surface-200 dark:bg-surface-700 shrink-0" />
                       <div class="hidden lg:flex flex-col flex-1 min-w-0">
                         <div class="flex items-start gap-3">
-                          <span
-                            class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5"
-                          >備考</span>
-                          <p class="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">{{ item.memo }}</p>
+                          <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0 whitespace-nowrap w-24 pt-0.5">備考</span>
+                          <p class="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
+                            {{ item.memo }}
+                          </p>
                         </div>
                       </div>
                     </template>

@@ -7,7 +7,6 @@ export interface TimelineItem {
     libraries: string[]
     dbs: string[]
     infra: string[]
-    tools: string[] // Docker, VSCode 等の開発ツール（表示しない）
   }
   note?: string
   memo?: string
@@ -24,7 +23,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: [],
       infra: [],
-      tools: [],
     },
   },
   {
@@ -37,7 +35,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['Jest'],
       dbs: ['MySQL', 'MariaDB'],
       infra: ['EC2', 'ECR/ECS'],
-      tools: [],
     },
   },
   {
@@ -51,7 +48,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['DynamoDB'],
       infra: ['Cognito'],
-      tools: [],
     },
   },
   {
@@ -64,7 +60,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MariaDB'],
       infra: ['さくらのクラウド'],
-      tools: ['Docker'],
     },
   },
   {
@@ -78,7 +73,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['SQL Server 2022'],
       infra: [],
-      tools: ['Docker', 'Visual Studio'],
     },
   },
   {
@@ -91,7 +85,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['PHPSpreadSheet'],
       dbs: ['MySQL 8.0'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -104,7 +97,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: [],
       infra: ['Azure', 'Windows Server', 'Logstash'],
-      tools: [],
     },
   },
   {
@@ -117,7 +109,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: [],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -131,7 +122,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: [],
       infra: ['Growi', 'EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -145,7 +135,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['PostgreSQL'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -159,7 +148,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['SQL Server', 'MySQL 5'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -173,7 +161,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['DynamoDB'],
       infra: ['Lambda'],
-      tools: ['Docker'],
     },
   },
   {
@@ -186,7 +173,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['TCPDF'],
       dbs: ['PostgreSQL 15'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -199,7 +185,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL'],
       infra: ['EC2'],
-      tools: ['Eclipse 2022'],
     },
   },
   {
@@ -212,7 +197,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['FullCalendar'],
       dbs: ['MySQL'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -226,7 +210,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL 8.0'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -240,7 +223,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL 8.0'],
       infra: [],
-      tools: ['Docker'],
     },
   },
   {
@@ -254,7 +236,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['jQuery'],
       dbs: ['MySQL 8.0'],
       infra: ['EC2', 'Apache', 'Tomcat'],
-      tools: ['Docker'],
     },
   },
   {
@@ -268,7 +249,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['tesseract.js'],
       dbs: ['MySQL 8.0'],
       infra: [],
-      tools: ['Docker'],
     },
   },
   {
@@ -282,7 +262,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL 8.0'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -296,7 +275,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['phpspreadsheet', 'php-barcode-generator'],
       dbs: ['PostgreSQL 14'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -309,7 +287,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -323,7 +300,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['jQuery'],
       dbs: ['MySQL'],
       infra: ['EC2'],
-      tools: ['Docker'],
     },
   },
   {
@@ -336,7 +312,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL'],
       infra: ['EC2', 'nginx'],
-      tools: ['Docker'],
     },
   },
   {
@@ -350,7 +325,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL'],
       infra: ['EC2', 'nginx', 'AWS DMS'],
-      tools: ['Docker', 'GitHub'],
     },
   },
   {
@@ -363,7 +337,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['jQuery'],
       dbs: ['MySQL'],
       infra: ['EC2', 'Apache', 'Tomcat'],
-      tools: [],
     },
   },
   {
@@ -376,7 +349,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['jQuery'],
       dbs: ['MySQL'],
       infra: ['EC2', 'ELB', 'Apache', 'Tomcat'],
-      tools: [],
     },
   },
   {
@@ -389,7 +361,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL'],
       infra: ['Apache'],
-      tools: [],
     },
   },
   {
@@ -402,7 +373,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: ['jQuery'],
       dbs: ['MySQL'],
       infra: ['EC2', 'ELB', 'RDS', 'EFS', 'Apache', 'Tomcat'],
-      tools: [],
     },
   },
   {
@@ -415,7 +385,6 @@ export const timelineItems: TimelineItem[] = [
       libraries: [],
       dbs: ['MySQL'],
       infra: ['Apache'],
-      tools: [],
     },
   },
 ]

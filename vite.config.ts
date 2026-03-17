@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => ({
     minify: 'esbuild',
     // Vite デフォルトの 500KB 警告を抑制（gzip 後は約 200KB のため実使用上は問題なし）
     // manualChunks によるチャンク分割は CSS ロード順序の乱れを引き起こす可能性があるため採用しない
-    chunkSizeWarningLimit: 800,
+    chunkSizeWarningLimit: 1200,
   },
   // プロダクションビルド時のみconsole.*とdebuggerを除去
   esbuild:

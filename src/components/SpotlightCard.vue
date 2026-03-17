@@ -31,13 +31,7 @@ function onMouseLeave(): void {
 </script>
 
 <template>
-  <div
-    ref="cardRef"
-    class="relative overflow-hidden"
-    @mousemove="onMouseMove"
-    @mouseenter="onMouseEnter"
-    @mouseleave="onMouseLeave"
-  >
+  <div ref="cardRef" class="relative overflow-hidden" @mousemove="onMouseMove" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
     <div
       class="pointer-events-none absolute inset-0 transition-opacity duration-500 ease-in-out rounded-[inherit]"
       :style="{

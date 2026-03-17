@@ -57,11 +57,14 @@ const colorModeOptions: { value: ColorMode; icon: string }[] = [
 const squaresBorderColor = computed(() => (isDark.value ? '#334155' : '#cbd5e1'))
 const squaresHoverFillColor = computed(() => (isDark.value ? '#1e293b' : '#e2e8f0'))
 const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc'))
+
+// タッチデバイス判定（スマホ・タブレット等の pointer: coarse デバイス）
+const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
 </script>
 
 <template>
   <div class="min-h-screen">
-    <TargetCursor target-selector=".cursor-target" />
+    <TargetCursor v-if="!isTouchDevice" target-selector=".cursor-target" />
 
     <SquaresBackground
       class="fixed inset-0 -z-10"
@@ -72,9 +75,7 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
       :gradient-color="squaresGradientColor"
     />
 
-    <header
-      class="px-6 py-2 border-b border-surface-200 dark:border-surface-700 bg-white/80 dark:bg-surface-950/80 backdrop-blur-sm flex items-center gap-1.5 sticky top-0 z-10"
-    >
+    <header class="px-6 py-2 border-b border-surface-200 dark:border-surface-700 bg-white/80 dark:bg-surface-950/80 backdrop-blur-sm flex items-center gap-1.5 sticky top-0 z-10">
       <span class="text-sm text-surface-400 dark:text-surface-500">imo-tikuwa's</span>
       <span class="text-sm font-bold text-surface-700 dark:text-surface-200">lab</span>
 
@@ -91,10 +92,7 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
             transform: 'skewX(-15deg)',
             width: themeStore.primaryColor === theme.name ? '2.625rem' : '1.75rem',
             height: themeStore.primaryColor === theme.name ? '1.75rem' : '1.5rem',
-            boxShadow:
-              themeStore.primaryColor === theme.name
-                ? `0 2px 8px ${theme.color}80`
-                : `0 2px 8px ${theme.color}00`,
+            boxShadow: themeStore.primaryColor === theme.name ? `0 2px 8px ${theme.color}80` : `0 2px 8px ${theme.color}00`,
           }"
           :title="theme.name"
           @click="themeStore.setPrimaryColor(theme.name)"
@@ -110,11 +108,7 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
           v-for="option in colorModeOptions"
           :key="option.value"
           class="cursor-target w-7 h-6 flex items-center justify-center rounded transition-all focus:outline-none hover:bg-surface-100 dark:hover:bg-surface-800"
-          :class="
-            colorMode === option.value
-              ? 'text-primary-500'
-              : 'text-surface-500 dark:text-surface-400'
-          "
+          :class="colorMode === option.value ? 'text-primary-500' : 'text-surface-500 dark:text-surface-400'"
           :title="option.value"
           @click="setColorMode(option.value)"
         >
@@ -133,11 +127,8 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
     </div>
 
     <!-- 画面下部固定 Dock ナビゲーション -->
-    <div
-      class="fixed bottom-0 left-0 right-0 z-50"
-      style="padding-bottom: env(safe-area-inset-bottom)"
-    >
-      <Dock :items="dockItems" />
+    <div class="fixed bottom-0 left-0 right-0 z-50" style="padding-bottom: env(safe-area-inset-bottom)">
+      <Dock :items="dockItems" :magnification="isTouchDevice ? 50 : 70" />
     </div>
   </div>
 </template>

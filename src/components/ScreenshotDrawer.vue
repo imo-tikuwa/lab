@@ -95,9 +95,7 @@ function onPointerUp(e: PointerEvent): void {
       <div class="flex items-center gap-2">
         <i class="pi pi-images text-primary-500" />
         <span class="font-bold text-surface-800 dark:text-surface-100">スクリーンショット</span>
-        <span v-if="total > 0" class="text-sm text-surface-400 dark:text-surface-500 ml-1">
-          {{ portfolioStore.screenshotActiveIndex + 1 }} / {{ total }}
-        </span>
+        <span v-if="total > 0" class="text-sm text-surface-400 dark:text-surface-500 ml-1"> {{ portfolioStore.screenshotActiveIndex + 1 }} / {{ total }} </span>
       </div>
     </template>
 
@@ -105,7 +103,7 @@ function onPointerUp(e: PointerEvent): void {
       <!-- カルーセル -->
       <div
         ref="containerRef"
-        class="relative overflow-hidden bg-surface-100 dark:bg-surface-800 flex-1 min-h-0"
+        class="relative overflow-hidden bg-surface-100 dark:bg-surface-800 flex-1 min-h-0 max-h-[40vh] sm:max-h-none"
         @pointerdown="onPointerDown"
         @pointermove="onPointerMove"
         @pointerup="onPointerUp"
@@ -121,38 +119,27 @@ function onPointerUp(e: PointerEvent): void {
             cursor: isDragging ? 'grabbing' : 'grab',
           }"
         >
-          <div
-            v-for="(ss, i) in screenshots"
-            :key="i"
-            class="flex items-center justify-center shrink-0 h-full"
-            :style="{ width: `${containerWidth}px` }"
-          >
-            <img
-              :src="ss.itemImageSrc"
-              :alt="ss.alt ?? ''"
-              class="max-w-full max-h-full object-contain pointer-events-none"
-              draggable="false"
-            />
+          <div v-for="(ss, i) in screenshots" :key="i" class="flex items-center justify-center shrink-0 h-full" :style="{ width: `${containerWidth}px` }">
+            <img :src="ss.itemImageSrc" :alt="ss.alt ?? ''" class="max-w-full max-h-full object-contain pointer-events-none" draggable="false" />
           </div>
         </div>
       </div>
 
       <!-- サムネイルナビゲーション -->
-      <div v-if="total > 1" class="flex justify-center gap-2 flex-wrap pb-24">
-        <img
-          v-for="(ss, i) in screenshots"
-          :key="ss.thumbnailImageSrc"
-          :src="ss.thumbnailImageSrc"
-          :alt="ss.alt ?? ''"
-          class="cursor-target h-16 w-24 object-cover cursor-pointer transition-all duration-200"
-          :class="
-            i === portfolioStore.screenshotActiveIndex
-              ? 'ring-2 ring-primary-500 opacity-100'
-              : 'opacity-50 hover:opacity-80'
-          "
-          draggable="false"
-          @click="portfolioStore.screenshotActiveIndex = i"
-        />
+      <div v-if="total > 1" class="pb-24">
+        <div class="flex flex-nowrap sm:flex-wrap sm:justify-center gap-2 overflow-x-auto pb-2 sm:pb-0">
+          <img
+            v-for="(ss, i) in screenshots"
+            :key="ss.thumbnailImageSrc"
+            :src="ss.thumbnailImageSrc"
+            :alt="ss.alt ?? ''"
+            class="cursor-target h-16 w-24 object-cover cursor-pointer transition-all duration-200 shrink-0"
+            :class="i === portfolioStore.screenshotActiveIndex ? 'ring-2 ring-primary-500 opacity-100' : 'opacity-50 hover:opacity-80'"
+            draggable="false"
+            @click="portfolioStore.screenshotActiveIndex = i"
+          />
+        </div>
+        <p class="sm:hidden mt-1 text-xs text-surface-400 dark:text-surface-500">← 横にスクロールできます</p>
       </div>
     </div>
   </Drawer>

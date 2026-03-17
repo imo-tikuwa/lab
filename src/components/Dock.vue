@@ -67,7 +67,8 @@ const DockLabel = defineComponent({
     return h(
       'div',
       {
-        class: 'absolute -top-9 left-1/2 w-fit whitespace-pre rounded-md border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-950 px-2 py-0.5 text-xs text-surface-700 dark:text-surface-200 transition-all duration-200',
+        class:
+          'absolute -top-9 left-1/2 w-fit whitespace-pre rounded-md border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-950 px-2 py-0.5 text-xs text-surface-700 dark:text-surface-200 transition-all duration-200',
         role: 'tooltip',
         style: {
           transform: 'translateX(-50%)',
@@ -105,11 +106,7 @@ const DockItem = defineComponent({
       return val - rect.x - itemProps.baseItemSize / 2
     })
 
-    const targetSize = useTransform(
-      mouseDistance,
-      [-itemProps.distance, 0, itemProps.distance],
-      [itemProps.baseItemSize, itemProps.magnification, itemProps.baseItemSize],
-    )
+    const targetSize = useTransform(mouseDistance, [-itemProps.distance, 0, itemProps.distance], [itemProps.baseItemSize, itemProps.magnification, itemProps.baseItemSize])
     const size = useSpring(targetSize, itemProps.spring)
 
     let unsubscribeSize: (() => void) | null = null
@@ -130,14 +127,8 @@ const DockItem = defineComponent({
     return { itemRef, currentSize, itemIsHovered, handleHoverStart, handleHoverEnd, handleFocus, handleBlur }
   },
   render() {
-    const icon =
-      typeof this.item.icon === 'function'
-        ? (this.item.icon as () => unknown)()
-        : this.item.icon
-    const label =
-      typeof this.item.label === 'function'
-        ? (this.item.label as () => unknown)()
-        : this.item.label
+    const icon = typeof this.item.icon === 'function' ? (this.item.icon as () => unknown)() : this.item.icon
+    const label = typeof this.item.label === 'function' ? (this.item.label as () => unknown)() : this.item.label
 
     return h(
       'div',
@@ -154,10 +145,7 @@ const DockItem = defineComponent({
         role: 'button',
         'aria-haspopup': 'true',
       },
-      [
-        h(DockIcon, {}, () => [icon]),
-        h(DockLabel, { isHovered: this.itemIsHovered }, () => [label]),
-      ],
+      [h(DockIcon, {}, () => [icon]), h(DockLabel, { isHovered: this.itemIsHovered }, () => [label])],
     )
   },
 })
@@ -168,9 +156,7 @@ const mouseX = useMotionValue(Infinity)
 const dockIsHovered = useMotionValue(0)
 const currentHeight = ref(props.panelHeight)
 
-const maxHeight = computed(() =>
-  Math.max(props.dockHeight, props.magnification + props.magnification / 2 + 4),
-)
+const maxHeight = computed(() => Math.max(props.dockHeight, props.magnification + props.magnification / 2 + 4))
 
 const heightRow = useTransform(dockIsHovered, [0, 1], [props.panelHeight, maxHeight.value])
 const height = useSpring(heightRow, props.spring)
@@ -199,10 +185,7 @@ const handleMouseLeave = () => {
 </script>
 
 <template>
-  <div
-    :style="{ height: currentHeight + 'px', scrollbarWidth: 'none' }"
-    class="relative flex items-center mx-2 max-w-full"
-  >
+  <div :style="{ height: currentHeight + 'px', scrollbarWidth: 'none' }" class="relative flex items-center mx-2 max-w-full">
     <div
       @mousemove="handleMouseMove"
       @mouseleave="handleMouseLeave"

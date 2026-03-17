@@ -10,26 +10,12 @@ export const portfolioItems: PortfolioItem[] = [
     stacks: {
       languages: ['TypeScript'],
       frameworks: ['Vue.js'],
-      libraries: [
-        '@vueuse/core',
-        'idb',
-        'pinia',
-        'pinia-plugin-persistedstate',
-        'primevue',
-        'primeicons',
-        'ulid',
-        'unplugin-auto-import',
-        'unplugin-vue-components',
-        'vite',
-        'vue-sonner',
-        'vue-tsc',
-      ],
+      libraries: ['@vueuse/core', 'idb', 'pinia', 'pinia-plugin-persistedstate', 'primevue', 'primeicons', 'ulid', 'unplugin-auto-import', 'unplugin-vue-components', 'vite', 'vue-sonner', 'vue-tsc'],
       tools: ['GitHub Actions', 'Node.js', 'npm', 'VSCode', 'Claude Code'],
       others: [],
     },
     thumbnail: '/lab/portfolio/noimage.png',
-    summary:
-      'RPGツクール MV/MZ のセーブデータ（.rpgsave / .rmmzsave）をブラウザ上で閲覧・編集できるツールです。',
+    summary: 'RPGツクール MV/MZ のセーブデータ（.rpgsave / .rmmzsave）をブラウザ上で閲覧・編集できるツールです。',
     descriptions: [
       '　',
       '◆開発について',
@@ -304,25 +290,12 @@ export const portfolioItems: PortfolioItem[] = [
     stacks: {
       languages: ['TypeScript'],
       frameworks: ['Vue.js'],
-      libraries: [
-        '@crxjs/vite-plugin',
-        '@vueuse/core',
-        'gulp',
-        'gulp-zip',
-        'prettier',
-        'primeflex',
-        'primevue',
-        'rollup-plugin-visualizer',
-        'vite',
-        'vue-i18n',
-        'vue-tsc',
-      ],
+      libraries: ['@crxjs/vite-plugin', '@vueuse/core', 'gulp', 'gulp-zip', 'prettier', 'primeflex', 'primevue', 'rollup-plugin-visualizer', 'vite', 'vue-i18n', 'vue-tsc'],
       tools: ['Docker', 'Node.js', 'npm', 'VSCode'],
       others: [],
     },
     thumbnail: '/lab/portfolio/bookmarks-health-checker.png',
-    summary:
-      '登録済みのブックマークについてリンク切れを起こしていないかチェックします。リンク切れを起こしているものをリストアップし、任意でユーザー操作によって一括削除できます。',
+    summary: '登録済みのブックマークについてリンク切れを起こしていないかチェックします。リンク切れを起こしているものをリストアップし、任意でユーザー操作によって一括削除できます。',
     descriptions: [
       '　',
       '◆使い方',
@@ -403,27 +376,13 @@ export const portfolioItems: PortfolioItem[] = [
     stacks: {
       languages: ['TypeScript'],
       frameworks: ['Nuxt3'],
-      libraries: [
-        '@nuxtjs/sitemap',
-        '@vueuse/nuxt',
-        'eslint',
-        'eslint-plugin-nuxt',
-        'nuxt-icon',
-        'nuxt-primevue',
-        'primeflex',
-        'primeicons',
-        'sass',
-        'vue-router',
-      ],
+      libraries: ['@nuxtjs/sitemap', '@vueuse/nuxt', 'eslint', 'eslint-plugin-nuxt', 'nuxt-icon', 'nuxt-primevue', 'primeflex', 'primeicons', 'sass', 'vue-router'],
       tools: ['Docker', 'Node.js', 'npm', 'VSCode'],
       others: [],
     },
     thumbnail: '/lab/portfolio/shiren6-price-helper.png',
-    summary:
-      '風来のシレン6に登場するアイテムの値段から種類を識別するためのツールです。',
-    descriptions: [
-      '識別済みのアイテムについてマークすることで除外した検索やカテゴリ単位での絞り込みなど柔軟な検索が可能となっています。',
-    ],
+    summary: '風来のシレン6に登場するアイテムの値段から種類を識別するためのツールです。',
+    descriptions: ['識別済みのアイテムについてマークすることで除外した検索やカテゴリ単位での絞り込みなど柔軟な検索が可能となっています。'],
     links: [
       {
         label: 'GitHub Pages',
@@ -482,8 +441,7 @@ export const portfolioItems: PortfolioItem[] = [
       others: [],
     },
     thumbnail: '/lab/portfolio/noimage.png',
-    summary:
-      'AWS の EC2/Lightsail のインスタンスの起動/停止のスケジュールを構築し Lambda によって自動起動/自動停止することができるツールです',
+    summary: 'AWS の EC2/Lightsail のインスタンスの起動/停止のスケジュールを構築し Lambda によって自動起動/自動停止することができるツールです',
     descriptions: [
       '　',
       '◆このツールについて',

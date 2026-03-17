@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { motion } from 'motion-v'
 import { useColorMode } from '@/composables/color-mode'
+import { useArticleStore } from '@/stores/article'
 import { useThemeStore } from '@/stores/theme'
 import { COLOR_THEMES } from '@/theme'
 
@@ -19,16 +21,6 @@ const spotlightColor = computed(() => {
   const hex = theme?.color ?? COLOR_THEMES[0]!.color
   return isDark.value ? hexToRgba(hex, 0.15) : hexToRgba(hex, 0.22)
 })
-
-interface ArticleItem {
-  id: string
-  title: string
-  url: string
-  created_at: string
-  tags: string[]
-  source: 'qiita' | 'zenn'
-  likes_count: number
-}
 
 interface TagWithCount {
   name: string
@@ -75,56 +67,27 @@ const skillCategories: SkillCategory[] = [
   },
   {
     label: 'DB',
-    items: [
-      { label: 'MySQL' },
-      { label: 'PostgreSQL', secondary: true },
-    ],
+    items: [{ label: 'MySQL' }, { label: 'PostgreSQL', secondary: true }],
   },
   {
     label: 'インフラ',
-    items: [
-      { label: 'Docker' },
-      { label: 'AWS' },
-    ],
+    items: [{ label: 'Docker' }, { label: 'AWS' }],
   },
   {
     label: 'OS',
-    items: [
-      { label: 'Ubuntu' },
-      { label: 'AL2023' },
-      { label: 'AlmaLinux' },
-      { label: 'Debian' },
-      { label: 'Amazon Linux 2', secondary: true },
-      { label: 'CentOS', secondary: true },
-    ],
+    items: [{ label: 'Ubuntu' }, { label: 'AL2023' }, { label: 'AlmaLinux' }, { label: 'Debian' }, { label: 'Amazon Linux 2', secondary: true }, { label: 'CentOS', secondary: true }],
   },
   {
     label: 'エディタ',
-    items: [
-      { label: 'VSCode' },
-      { label: 'Eclipse', secondary: true },
-      { label: 'Visual Studio', secondary: true },
-    ],
+    items: [{ label: 'VSCode' }, { label: 'Eclipse', secondary: true }, { label: 'Visual Studio', secondary: true }],
   },
   {
     label: 'VCS',
-    items: [
-      { label: 'GitHub' },
-      { label: 'GitLab' },
-      { label: 'BitBucket', secondary: true },
-      { label: 'SVN', secondary: true },
-      { label: 'CVS', secondary: true },
-    ],
+    items: [{ label: 'GitHub' }, { label: 'GitLab' }, { label: 'BitBucket', secondary: true }, { label: 'SVN', secondary: true }, { label: 'CVS', secondary: true }],
   },
   {
     label: 'ツール',
-    items: [
-      { label: 'Slack' },
-      { label: 'WSL2' },
-      { label: 'A5M2' },
-      { label: 'Backlog', secondary: true },
-      { label: 'Zoom', secondary: true },
-    ],
+    items: [{ label: 'Slack' }, { label: 'WSL2' }, { label: 'A5M2' }, { label: 'Backlog', secondary: true }, { label: 'Zoom', secondary: true }],
   },
 ]
 
@@ -138,27 +101,24 @@ const socialLinks = [
   { href: 'https://zenn.dev/imo_tikuwa', icon: 'pi pi-book', label: 'Zenn' },
 ] as const
 
-const articles = ref<ArticleItem[]>([])
-const loading = ref(false)
+const articleStore = useArticleStore()
 const selectedTags = ref<string[]>([])
 const popoverRef = ref<PopoverInstance | null>(null)
 
 // タグを記事出現数の多い順にソート
 const allTagsSorted = computed<TagWithCount[]>(() => {
   const countMap = new Map<string, number>()
-  articles.value.forEach((a) => {
+  articleStore.items.forEach((a) => {
     a.tags.forEach((t) => {
       countMap.set(t, (countMap.get(t) ?? 0) + 1)
     })
   })
-  return [...countMap.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, count]) => ({ name, count }))
+  return [...countMap.entries()].sort((a, b) => b[1] - a[1]).map(([name, count]) => ({ name, count }))
 })
 
-const filteredArticles = computed<ArticleItem[]>(() => {
-  if (selectedTags.value.length === 0) return articles.value
-  return articles.value.filter((a) => selectedTags.value.some((t) => a.tags.includes(t)))
+const filteredArticles = computed(() => {
+  if (selectedTags.value.length === 0) return articleStore.items
+  return articleStore.items.filter((a) => selectedTags.value.some((t) => a.tags.includes(t)))
 })
 
 function toggleFilter(event: MouseEvent): void {
@@ -183,121 +143,77 @@ function formatDate(dateStr: string): string {
   return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`
 }
 
-async function fetchArticles(): Promise<void> {
-  loading.value = true
-  try {
-    const res = await fetch(`${import.meta.env.BASE_URL}data/articles.json`)
-    if (!res.ok) return
-    const data: ArticleItem[] = await res.json()
-    articles.value = data
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(fetchArticles)
+onMounted(articleStore.load)
 </script>
 
 <template>
   <main class="max-w-screen-xl mx-auto px-6 py-8">
     <!-- プロフィールカード -->
-    <div
-      class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 p-6 mb-8"
-    >
-      <div class="flex flex-col sm:flex-row gap-6 items-start">
-        <!-- アバター -->
-        <img
-          src="https://github.com/imo-tikuwa.png"
-          alt="imo-tikuwa"
-          class="w-20 h-20 rounded-full border-2 border-surface-200 dark:border-surface-600 shrink-0"
-        />
+    <div class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 p-5 mb-8">
+      <!-- グリッド: モバイル=2列(auto + 1fr)、sm以上=avatar が3行スパン -->
+      <div class="grid grid-cols-[auto_1fr] gap-4 sm:gap-x-6 items-start">
+        <!-- アバター: sm以上で3行スパンして右列を縦に並べる -->
+        <img src="https://github.com/imo-tikuwa.png" alt="imo-tikuwa" class="w-20 h-20 rounded-full border-2 border-surface-200 dark:border-surface-600 sm:row-span-3" />
 
-        <div class="flex flex-col gap-4 flex-1">
-          <!-- 名前・自己紹介 -->
-          <div class="flex flex-col gap-1.5">
-            <span class="text-xl font-bold text-surface-900 dark:text-surface-50">imo-tikuwa</span>
-            <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
-              会社員PGとして約10年経験を積み、現在はフリーランスエンジニアとして活動中。<br />
-              フロントエンド・バックエンド・インフラと、領域を問わず幅広く対応しています。
-            </p>
+        <!-- 名前・自己紹介 -->
+        <div class="flex flex-col gap-1.5 min-w-0">
+          <span class="text-xl font-bold text-surface-900 dark:text-surface-50">imo-tikuwa</span>
+          <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
+            会社員PGとして約10年経験を積み、現在はフリーランスエンジニアとして活動中。<br />
+            フロントエンド・バックエンド・インフラと、領域を問わず幅広く対応しています。
+          </p>
+        </div>
+
+        <!-- SNS リンク: モバイルは2列全幅、sm以上は右列 -->
+        <div class="col-span-2 sm:col-span-1 flex flex-wrap gap-2">
+          <a
+            v-for="link in socialLinks"
+            :key="link.href"
+            :href="link.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="cursor-target inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-surface-300 dark:border-surface-600 rounded text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-800 hover:border-surface-400 dark:hover:border-surface-500 transition-colors"
+          >
+            <i :class="link.icon" style="font-size: 0.8rem" />
+            <span class="sm:hidden">{{ link.label === 'X / Twitter' ? 'X' : link.label }}</span>
+            <span class="hidden sm:inline">{{ link.label }}</span>
+          </a>
+        </div>
+
+        <!-- スキルセット: モバイルは2列全幅、sm以上は右列 -->
+        <div class="col-span-2 sm:col-span-1 flex flex-col gap-2">
+          <!-- 凡例 -->
+          <div class="flex items-center gap-4 text-xs text-surface-500 dark:text-surface-400">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 bg-primary-500 shrink-0 inline-block" />
+              日常的に使用中
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 bg-surface-300 dark:bg-surface-600 shrink-0 inline-block" />
+              過去経験あり
+            </span>
           </div>
 
-          <!-- SNS リンク -->
-          <div class="flex flex-wrap gap-2">
-            <a
-              v-for="link in socialLinks"
-              :key="link.href"
-              :href="link.href"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="cursor-target inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border border-surface-300 dark:border-surface-600 rounded text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-800 hover:border-surface-400 dark:hover:border-surface-500 transition-colors"
-            >
-              <i :class="link.icon" style="font-size: 0.8rem" />
-              {{ link.label }}
-            </a>
-          </div>
-
-          <!-- スキルセット -->
-          <div class="flex flex-col gap-2">
-            <!-- 凡例 -->
-            <div class="flex items-center gap-4 text-xs text-surface-500 dark:text-surface-400">
-              <span class="flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 bg-primary-500 shrink-0 inline-block" />
-                日常的に使用中
-              </span>
-              <span class="flex items-center gap-1.5">
-                <span
-                  class="w-2.5 h-2.5 bg-surface-300 dark:bg-surface-600 shrink-0 inline-block"
-                />
-                過去経験あり
-              </span>
-            </div>
-
-            <div class="flex flex-col lg:flex-row">
-              <!-- 左: 言語・FW・DB・インフラ -->
-              <div class="flex flex-col gap-2 flex-1 min-w-0">
-                <div
-                  v-for="cat in skillCategoriesLeft"
-                  :key="cat.label"
-                  class="flex flex-wrap gap-1.5 items-center"
-                >
-                  <span
-                    class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 w-[4.5rem]"
-                    >{{ cat.label }}</span
-                  >
-                  <Badge
-                    v-for="badge in cat.items"
-                    :key="badge.label"
-                    :value="badge.label"
-                    :severity="badge.secondary ? 'secondary' : undefined"
-                    class="text-xs"
-                  />
+          <div class="flex flex-col lg:flex-row">
+            <!-- 左: 言語・FW・DB・インフラ -->
+            <div class="flex flex-col gap-2 flex-1 min-w-0">
+              <div v-for="cat in skillCategoriesLeft" :key="cat.label" class="flex items-start gap-1.5">
+                <span class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 min-w-[4.5rem] pt-0.5">{{ cat.label }}</span>
+                <div class="flex flex-wrap gap-1.5">
+                  <Badge v-for="badge in cat.items" :key="badge.label" :value="badge.label" :severity="badge.secondary ? 'secondary' : undefined" class="text-xs" />
                 </div>
               </div>
+            </div>
 
-              <!-- 仕切り線 -->
-              <div
-                class="hidden lg:block w-px mx-5 self-stretch bg-surface-200 dark:bg-surface-700 shrink-0"
-              />
+            <!-- 仕切り線 -->
+            <div class="hidden lg:block w-px mx-5 self-stretch bg-surface-200 dark:bg-surface-700 shrink-0" />
 
-              <!-- 右: OS・エディタ・VCS・ツール -->
-              <div class="flex flex-col gap-2 flex-1 min-w-0 mt-2 lg:mt-0">
-                <div
-                  v-for="cat in skillCategoriesRight"
-                  :key="cat.label"
-                  class="flex flex-wrap gap-1.5 items-center"
-                >
-                  <span
-                    class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 w-[4.5rem]"
-                    >{{ cat.label }}</span
-                  >
-                  <Badge
-                    v-for="badge in cat.items"
-                    :key="badge.label"
-                    :value="badge.label"
-                    :severity="badge.secondary ? 'secondary' : undefined"
-                    class="text-xs"
-                  />
+            <!-- 右: OS・エディタ・VCS・ツール -->
+            <div class="flex flex-col gap-2 flex-1 min-w-0 mt-2 lg:mt-0">
+              <div v-for="cat in skillCategoriesRight" :key="cat.label" class="flex items-start gap-1.5">
+                <span class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 min-w-[4.5rem] pt-0.5">{{ cat.label }}</span>
+                <div class="flex flex-wrap gap-1.5">
+                  <Badge v-for="badge in cat.items" :key="badge.label" :value="badge.label" :severity="badge.secondary ? 'secondary' : undefined" class="text-xs" />
                 </div>
               </div>
             </div>
@@ -307,46 +223,22 @@ onMounted(fetchArticles)
     </div>
 
     <!-- 記事・スクラップ一覧 -->
-    <div
-      class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 px-6 py-5"
-    >
+    <div class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm border border-surface-200/60 dark:border-surface-700/60 p-5">
       <!-- ヘッダー行：タイトル左 / フィルター右（デスクトップ） -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div class="flex items-center gap-2">
           <i class="pi pi-book text-surface-400 dark:text-surface-500" />
-          <h2 class="text-base font-semibold text-surface-700 dark:text-surface-200">
-            記事・スクラップ
-          </h2>
-          <span v-if="!loading" class="text-xs text-surface-400 dark:text-surface-500">
-            {{ filteredArticles.length }} 件
-          </span>
+          <h2 class="text-base font-semibold text-surface-700 dark:text-surface-200">記事・スクラップ</h2>
+          <span v-if="!articleStore.loading" class="text-xs text-surface-400 dark:text-surface-500"> {{ filteredArticles.length }} 件 </span>
         </div>
 
         <!-- タグフィルター操作（タグ表示 → クリア → 絞り込むボタン の順で右端固定） -->
         <div v-if="allTagsSorted.length > 0" class="flex flex-wrap items-center gap-2">
           <div v-if="selectedTags.length > 0" class="flex flex-wrap gap-x-2 gap-y-0.5">
-            <span
-              v-for="tag in selectedTags.slice(0, 5)"
-              :key="tag"
-              class="text-xs text-primary-500 dark:text-primary-400"
-              >#{{ tag }}</span
-            >
-            <span
-              v-if="selectedTags.length > 5"
-              class="text-xs text-surface-400 dark:text-surface-500"
-              >+{{ selectedTags.length - 5 }}</span
-            >
+            <span v-for="tag in selectedTags.slice(0, 5)" :key="tag" class="text-xs text-primary-500 dark:text-primary-400">#{{ tag }}</span>
+            <span v-if="selectedTags.length > 5" class="text-xs text-surface-400 dark:text-surface-500">+{{ selectedTags.length - 5 }}</span>
           </div>
-          <Button
-            v-if="selectedTags.length > 0"
-            class="cursor-target"
-            size="small"
-            variant="text"
-            severity="secondary"
-            icon="pi pi-times"
-            label="クリア"
-            @click="clearTags"
-          />
+          <Button v-if="selectedTags.length > 0" class="cursor-target" size="small" variant="text" severity="secondary" icon="pi pi-times" label="クリア" @click="clearTags" />
           <Button
             class="cursor-target"
             size="small"
@@ -361,10 +253,8 @@ onMounted(fetchArticles)
       <!-- タグフィルター Popover -->
       <Popover ref="popoverRef">
         <div class="p-3 w-[500px] max-w-[calc(100vw-2rem)]">
-          <p class="text-xs text-surface-400 dark:text-surface-500 mb-2.5">
-            頻出順 · クリックで絞り込み
-          </p>
-          <div class="grid grid-cols-3 gap-1.5 max-h-72 overflow-y-auto pr-0.5">
+          <p class="text-xs text-surface-400 dark:text-surface-500 mb-2.5">頻出順 · クリックで絞り込み</p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-72 overflow-y-auto pr-0.5">
             <button
               v-for="tag in allTagsSorted"
               :key="tag.name"
@@ -377,74 +267,53 @@ onMounted(fetchArticles)
               @click="toggleTag(tag.name)"
             >
               <span class="truncate">{{ tag.name }}</span>
-              <span
-                class="shrink-0 tabular-nums text-[0.65rem]"
-                :class="
-                  selectedTags.includes(tag.name)
-                    ? 'text-white/70'
-                    : 'text-surface-400 dark:text-surface-500'
-                "
-                >{{ tag.count }}</span
-              >
+              <span class="shrink-0 tabular-nums text-[0.65rem]" :class="selectedTags.includes(tag.name) ? 'text-white/70' : 'text-surface-400 dark:text-surface-500'">{{ tag.count }}</span>
             </button>
           </div>
         </div>
       </Popover>
 
       <!-- ローディング スケルトン -->
-      <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div v-if="articleStore.loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <Skeleton v-for="n in 9" :key="n" height="116px" border-radius="2px" />
       </div>
 
       <!-- 記事グリッド -->
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <SpotlightCard
-          v-for="article in filteredArticles"
+        <motion.div
+          v-for="(article, i) in filteredArticles"
           :key="article.id"
-          :spotlight-color="spotlightColor"
-          class="cursor-target bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm transition-all"
+          :initial="{ opacity: 0, y: 16 }"
+          :while-in-view="{ opacity: 1, y: 0 }"
+          :transition="{ duration: 0.4, delay: (i % 6) * 0.06 }"
+          :in-view-options="{ once: true }"
         >
-          <a
-            :href="article.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex flex-col gap-2.5 p-4 h-full"
+          <SpotlightCard
+            :spotlight-color="spotlightColor"
+            class="cursor-target bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm transition-all h-full"
           >
-            <div class="flex items-center justify-between gap-2">
-              <Badge
-                :value="article.source === 'qiita' ? 'Qiita' : 'Zenn'"
-                :severity="article.source === 'qiita' ? 'success' : 'info'"
-                class="text-xs shrink-0"
-              />
-              <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0">
-                {{ formatDate(article.created_at) }}
+            <a :href="article.url" target="_blank" rel="noopener noreferrer" class="flex flex-col gap-2.5 p-4 h-full">
+              <div class="flex items-center justify-between gap-2">
+                <Badge :value="article.source === 'qiita' ? 'Qiita' : 'Zenn'" :severity="article.source === 'qiita' ? 'success' : 'info'" class="text-xs shrink-0" />
+                <span class="text-xs text-surface-400 dark:text-surface-500 shrink-0">
+                  {{ formatDate(article.created_at) }}
+                </span>
+              </div>
+              <span class="text-sm font-medium text-surface-900 dark:text-surface-50 leading-snug line-clamp-2 flex-1">
+                {{ article.title }}
               </span>
-            </div>
-            <span
-              class="text-sm font-medium text-surface-900 dark:text-surface-50 leading-snug line-clamp-2 flex-1"
-            >
-              {{ article.title }}
-            </span>
-            <div v-if="article.tags.length > 0" class="flex flex-wrap gap-x-2 gap-y-0.5">
-              <span
-                v-for="tag in article.tags.slice(0, 3)"
-                :key="tag"
-                class="text-xs text-primary-500 dark:text-primary-400"
-                >#{{ tag }}</span
-              >
-              <span
-                v-if="article.tags.length > 3"
-                class="text-xs text-surface-400 dark:text-surface-500"
-                >+{{ article.tags.length - 3 }}</span
-              >
-            </div>
-          </a>
-        </SpotlightCard>
+              <div v-if="article.tags.length > 0" class="flex flex-wrap gap-x-2 gap-y-0.5">
+                <span v-for="tag in article.tags.slice(0, 3)" :key="tag" class="text-xs text-primary-500 dark:text-primary-400">#{{ tag }}</span>
+                <span v-if="article.tags.length > 3" class="text-xs text-surface-400 dark:text-surface-500">+{{ article.tags.length - 3 }}</span>
+              </div>
+            </a>
+          </SpotlightCard>
+        </motion.div>
       </div>
 
       <!-- 空状態 -->
       <div
-        v-if="!loading && filteredArticles.length === 0"
+        v-if="!articleStore.loading && filteredArticles.length === 0"
         class="flex items-center justify-center py-12 text-surface-400 dark:text-surface-500 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
       >
         <span class="text-sm">該当する記事が見つかりません</span>
