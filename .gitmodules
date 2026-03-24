@@ -4,3 +4,6 @@
 [submodule "shiren6-price-helper"]
 	path = pages/shiren6-price-helper
 	url = https://github.com/imo-tikuwa/shiren6-price-helper.git
+[submodule "pricone-re-synthesis"]
+	path = pages/pricone-re-synthesis
+	url = https://github.com/imo-tikuwa/pricone-re-synthesis.git
