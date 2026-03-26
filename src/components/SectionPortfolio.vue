@@ -122,7 +122,7 @@ function extraStackCount(item: PortfolioItem): number {
                 class="flex flex-col sm:flex-row gap-4 p-5 bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-primary-400 dark:hover:border-primary-500 hover:shadow-sm transition-all"
               >
                 <div
-                  class="relative overflow-hidden rounded shrink-0 w-full sm:w-52 self-stretch min-h-32 sm:min-h-0"
+                  class="relative overflow-hidden rounded shrink-0 w-full sm:w-52 self-stretch sm:h-36 min-h-32 sm:min-h-0"
                   :class="item.screenshots.length ? 'cursor-target cursor-pointer group' : ''"
                   @click.stop="openItemScreenshots(item)"
                 >

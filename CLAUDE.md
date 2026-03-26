@@ -46,6 +46,8 @@ GitHub Pages で公開する静的ツール集のリポジトリ。
 | ツール名 | パス | 概要 |
 |---|---|---|
 | RPGツクール MV/MZ セーブエディター | `/lab/rpgsave-editor/` | RPGツクール MV / MZ のセーブデータ（.rpgsave / .rmmzsave）をブラウザ上で閲覧・編集するツール |
+| 風来のシレン6 値段識別ツール | `/lab/shiren6-price-helper/` | 風来のシレン6 に登場するアイテムの値段から種類を識別するツール |
+| プリンセスコネクト！Re:Dive 究極錬成自動化ツール | `/lab/pricone-re-synthesis/` | プリンセスコネクト Re:Dive の究極錬成を Windows 上で自動化するデスクトップツールの紹介ページ |
 
 ---
 

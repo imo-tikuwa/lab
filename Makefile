@@ -38,7 +38,7 @@
 #
 # ==============================================================================
 
-.PHONY: preview serve build build-lab build-submodules build-rpgsave-editor build-shiren6-price-helper preview-lab proxy
+.PHONY: preview serve build build-lab build-submodules build-rpgsave-editor build-shiren6-price-helper build-pricone-re-synthesis preview-lab proxy
 
 SITE_DIR := /tmp/lab-site
 SERVE_DIR := /tmp/lab-serve
@@ -59,7 +59,7 @@ build-lab:
 	mv dist $(SITE_DIR)
 
 # 全サブモジュールをビルドして site/ にコピー
-build-submodules: build-rpgsave-editor build-shiren6-price-helper
+build-submodules: build-rpgsave-editor build-shiren6-price-helper build-pricone-re-synthesis
 
 build-rpgsave-editor:
 	cd pages/rpgsave-editor && npm ci && npm run build
@@ -68,6 +68,10 @@ build-rpgsave-editor:
 build-shiren6-price-helper:
 	cd pages/shiren6-price-helper && npm ci && npm run build
 	cp -r pages/shiren6-price-helper/dist $(SITE_DIR)/shiren6-price-helper
+
+build-pricone-re-synthesis:
+	cd pages/pricone-re-synthesis/web && npm ci && npm run build
+	cp -r pages/pricone-re-synthesis/web/dist $(SITE_DIR)/pricone-re-synthesis
 
 # 開発用高速プレビュー: lab のみビルド、サブモジュールはビルド済み dist を流用（なければスキップ）
 preview-lab: build-lab
@@ -80,6 +84,11 @@ preview-lab: build-lab
 		cp -r pages/shiren6-price-helper/dist $(SITE_DIR)/shiren6-price-helper; \
 	else \
 		echo "[preview-lab] shiren6-price-helper/dist なし - スキップ"; \
+	fi
+	@if [ -d "pages/pricone-re-synthesis/web/dist" ]; then \
+		cp -r pages/pricone-re-synthesis/web/dist $(SITE_DIR)/pricone-re-synthesis; \
+	else \
+		echo "[preview-lab] pricone-re-synthesis/web/dist なし - スキップ"; \
 	fi
 	$(MAKE) serve
 

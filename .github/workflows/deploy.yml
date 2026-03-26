@@ -92,6 +92,27 @@ jobs:
       - name: Copy shiren6-price-helper build
         run: cp -r pages/shiren6-price-helper/dist site/shiren6-price-helper
 
+      # pricone-re-synthesis のビルド
+      - name: Setup Node.js (pricone-re-synthesis)
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: pages/pricone-re-synthesis/web/package-lock.json
+
+      - name: Install dependencies (pricone-re-synthesis)
+        working-directory: pages/pricone-re-synthesis/web
+        run: npm ci
+
+      - name: Build pricone-re-synthesis
+        working-directory: pages/pricone-re-synthesis/web
+        run: npm run build
+        env:
+          VITE_PRICONE_RE_SYNTHESIS_GA4_MEASUREMENT_ID: ${{ secrets.VITE_PRICONE_RE_SYNTHESIS_GA4_MEASUREMENT_ID }}
+
+      - name: Copy pricone-re-synthesis build
+        run: cp -r pages/pricone-re-synthesis/web/dist site/pricone-re-synthesis
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
