@@ -159,7 +159,7 @@ onMounted(articleStore.load)
         <div class="flex flex-col gap-1.5 min-w-0">
           <span class="text-xl font-bold text-surface-900 dark:text-surface-50">imo-tikuwa</span>
           <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
-            会社員PGとして約10年経験を積み、現在はフリーランスエンジニアとして活動中。<br />
+            開発会社でのエンジニア経験約10年を経て、現在はフリーランスエンジニアとして活動中。<br />
             フロントエンド・バックエンド・インフラと、領域を問わず幅広く対応しています。
           </p>
         </div>

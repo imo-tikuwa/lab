@@ -84,6 +84,20 @@ function navigateTo(section: Parameters<typeof navStore.navigate>[0]): void {
       <span class="text-sm text-surface-400 dark:text-surface-500">imo-tikuwa's</span>
       <span class="text-sm font-bold text-surface-700 dark:text-surface-200">lab</span>
 
+      <!-- デスクトップ用中央ナビゲーション -->
+      <nav class="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-1">
+        <button
+          v-for="item in dockItems"
+          :key="item.label"
+          class="cursor-target flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors focus:outline-none"
+          :class="item.className.includes('ring-2') ? 'text-primary-500' : 'text-surface-500 dark:text-surface-400 hover:text-primary-500'"
+          @click="item.onClick"
+        >
+          <component :is="item.icon" />
+          {{ item.label }}
+        </button>
+      </nav>
+
       <div class="flex-1" />
 
       <!-- プライマリカラー切り替えスウォッチ -->

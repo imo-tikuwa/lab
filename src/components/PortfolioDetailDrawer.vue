@@ -32,7 +32,7 @@ const hasStacks = computed(
       </div>
     </template>
 
-    <div v-if="portfolioStore.selectedItem" class="space-y-5">
+    <div v-if="portfolioStore.selectedItem" class="space-y-5 pb-24">
       <!-- ヘッダー画像（全幅） -->
       <div class="overflow-hidden bg-surface-100 dark:bg-surface-800">
         <img :src="portfolioStore.selectedItem.thumbnail" :alt="`${portfolioStore.selectedItem.title}のサムネイル`" class="w-full" />
