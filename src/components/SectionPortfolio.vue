@@ -147,7 +147,7 @@ function extraStackCount(item: PortfolioItem): number {
                         {{ item.title }}
                       </span>
                       <div class="flex flex-wrap gap-1">
-                        <Badge v-for="cat in item.category" :key="cat" :value="cat" severity="info" class="text-xs" />
+                        <Badge v-for="cat in item.category" :key="cat" :value="cat" class="text-xs" />
                       </div>
                     </div>
                   </div>
@@ -222,7 +222,7 @@ function extraStackCount(item: PortfolioItem): number {
                 </div>
                 <div class="flex flex-col flex-1 gap-2 p-4">
                   <div class="flex flex-wrap gap-1">
-                    <Badge v-for="cat in item.category" :key="cat" :value="cat" severity="info" class="text-xs" />
+                    <Badge v-for="cat in item.category" :key="cat" :value="cat" class="text-xs" />
                   </div>
                   <span class="text-sm font-semibold text-surface-900 dark:text-surface-50 leading-snug">
                     {{ item.title }}
