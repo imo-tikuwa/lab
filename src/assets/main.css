@@ -14,6 +14,15 @@ html {
   cursor: none !important;
 }
 
+/* .cursor-restore ホバー中はシステムカーソルを復元しカスタムカーソルを非表示 */
+.hide-cursor:has(.cursor-restore:hover) .cursor-restore,
+.hide-cursor:has(.cursor-restore:hover) .cursor-restore * {
+  cursor: default !important;
+}
+body:has(.cursor-restore:hover) #target-cursor {
+  opacity: 0 !important;
+}
+
 /* スクロールバー */
 * {
   scrollbar-width: thin;

@@ -348,7 +348,7 @@ watch(
 </script>
 
 <template>
-  <div ref="cursorRef" class="top-0 left-0 z-[9999] fixed w-0 h-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-difference transform opacity-0" :style="{ willChange: 'transform' }">
+  <div id="target-cursor" ref="cursorRef" class="top-0 left-0 z-[9999] fixed w-0 h-0 -translate-x-1/2 -translate-y-1/2 pointer-events-none mix-blend-difference transform opacity-0" :style="{ willChange: 'transform' }">
     <div class="top-1/2 left-1/2 absolute bg-white rounded-full w-1 h-1 -translate-x-1/2 -translate-y-1/2 transform" :style="{ willChange: 'transform' }" />
     <div
       class="top-1/2 left-1/2 absolute border-[3px] border-white border-r-0 border-b-0 w-3 h-3 -translate-x-[150%] -translate-y-[150%] target-cursor-corner transform"
