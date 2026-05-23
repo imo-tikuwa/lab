@@ -42,10 +42,10 @@ watch(
       </nav>
 
       <!-- プレイヤー + 動画情報 -->
-      <div class="flex gap-6 items-start mb-6">
-        <!-- 左: プレイヤー -->
-        <div class="shrink-0">
-          <div class="cursor-restore bg-black flex items-center justify-center" style="width: 720px; height: 480px;">
+      <div class="flex flex-col md:flex-row gap-6 items-start mb-6">
+        <!-- プレイヤー -->
+        <div class="w-full md:shrink-0 md:w-auto">
+          <div class="cursor-restore bg-black flex items-center justify-center w-full aspect-[3/2] md:w-[720px] md:h-[480px] md:aspect-auto">
             <video
               v-if="videoStore.selectedVideo"
               ref="videoRef"
@@ -59,8 +59,8 @@ watch(
           </div>
         </div>
 
-        <!-- 右: 動画情報パネル -->
-        <div class="flex-1 min-w-0 border-l border-surface-200/60 dark:border-surface-700/60 pl-5 space-y-3">
+        <!-- 動画情報パネル -->
+        <div class="flex-1 min-w-0 border-t md:border-t-0 md:border-l border-surface-200/60 dark:border-surface-700/60 pt-4 md:pt-0 md:pl-5 space-y-3">
           <Badge v-if="videoStore.selectedVideo" :value="videoStore.selectedVideo.product" class="self-start" />
           <h1 class="text-base font-semibold text-surface-900 dark:text-surface-50 leading-snug">
             {{ videoStore.selectedVideo?.title }}
