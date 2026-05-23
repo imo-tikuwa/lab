@@ -106,17 +106,16 @@ serve:
 	npx --yes http-server $(SERVE_DIR) -p $(PORT) --cors
 
 # R2 へのアップロード
-upload-all: upload-json upload-thumbnails upload-videos
+R2_UPLOAD := node scripts/upload-r2.js
+
+upload-all:
+	$(R2_UPLOAD)
 
 upload-json:
-	$(WRANGLER) r2 object put $(BUCKET)/videos.json --file=services/cloudflare/r2/videos.json --remote
+	$(R2_UPLOAD) json
 
 upload-thumbnails:
-	@for f in services/cloudflare/r2/thumbnails/*.jpg; do \
-		$(WRANGLER) r2 object put "$(BUCKET)/thumbnails/$$(basename $$f)" --file="$$f" --remote; \
-	done
+	$(R2_UPLOAD) thumbnails
 
 upload-videos:
-	@for f in services/cloudflare/r2/videos/*.mp4; do \
-		$(WRANGLER) r2 object put "$(BUCKET)/videos/$$(basename $$f)" --file="$$f" --remote; \
-	done
+	$(R2_UPLOAD) videos

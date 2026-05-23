@@ -40,6 +40,8 @@
     "vue-sonner": "^2.0.9"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1053.0",
+    "@aws-sdk/lib-storage": "^3.1053.0",
     "@primevue/auto-import-resolver": "^4.5.4",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
