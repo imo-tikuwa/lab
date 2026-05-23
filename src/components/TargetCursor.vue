@@ -275,9 +275,18 @@ const setupAnimation = () => {
 
   window.addEventListener('mouseover', enterHandler, { passive: true })
 
+  const domObserver = new MutationObserver(() => {
+    if (activeTarget && !document.contains(activeTarget)) {
+      currentLeaveHandler?.()
+    }
+  })
+  domObserver.observe(document.body, { childList: true, subtree: true })
+
   cleanupAnimation = () => {
     window.removeEventListener('mousemove', moveHandler)
     window.removeEventListener('mouseover', enterHandler)
+
+    domObserver.disconnect()
 
     if (activeTarget) {
       cleanupTarget(activeTarget)
