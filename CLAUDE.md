@@ -27,7 +27,7 @@ GitHub Pages で公開する静的ツール集のリポジトリ。
 
 ## コマンド
 
-- `npm run dev`: 開発サーバー起動
+- `npm run dev`: 開発サーバー起動（vite + Cloudflare Worker + ローカル動画サーバーを同時起動）
 - `npm run build`: プロダクションビルド
 - `npm run lint`: ESLint 実行
 - `npm run format`: Prettier 実行

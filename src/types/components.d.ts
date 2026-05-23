@@ -23,11 +23,14 @@ declare module 'vue' {
     SectionPortfolio: typeof import('./../components/SectionPortfolio.vue')['default']
     SectionProfile: typeof import('./../components/SectionProfile.vue')['default']
     SectionTimeline: typeof import('./../components/SectionTimeline.vue')['default']
+    SectionVideo: typeof import('./../components/SectionVideo.vue')['default']
     Select: typeof import('primevue/select')['default']
     SelectButton: typeof import('primevue/selectbutton')['default']
     Skeleton: typeof import('primevue/skeleton')['default']
     SpotlightCard: typeof import('./../components/SpotlightCard.vue')['default']
     SquaresBackground: typeof import('./../components/SquaresBackground.vue')['default']
     TargetCursor: typeof import('./../components/TargetCursor.vue')['default']
+    VideoDetail: typeof import('./../components/VideoDetail.vue')['default']
+    VideoList: typeof import('./../components/VideoList.vue')['default']
   }
 }

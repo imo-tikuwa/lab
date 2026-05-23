@@ -7,3 +7,6 @@
 [submodule "pricone-re-synthesis"]
 	path = pages/pricone-re-synthesis
 	url = https://github.com/imo-tikuwa/pricone-re-synthesis.git
+[submodule "cloudflare"]
+	path = services/cloudflare
+	url = https://github.com/imo-tikuwa/lab-video.git

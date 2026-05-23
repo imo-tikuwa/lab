@@ -38,11 +38,13 @@
 #
 # ==============================================================================
 
-.PHONY: preview serve build build-lab build-submodules build-rpgsave-editor build-shiren6-price-helper build-pricone-re-synthesis preview-lab proxy
+.PHONY: preview serve build build-lab build-submodules build-rpgsave-editor build-shiren6-price-helper build-pricone-re-synthesis preview-lab proxy upload-all upload-json upload-thumbnails upload-videos
 
 SITE_DIR := /tmp/lab-site
 SERVE_DIR := /tmp/lab-serve
 PORT := 5173
+WRANGLER := . ~/.cloudflare.env && npx wrangler
+BUCKET := lab-videos
 
 # ビルドしてからプレビューサーバーを起動
 preview: build serve
@@ -102,3 +104,19 @@ serve:
 	mkdir -p $(SERVE_DIR)
 	ln -sfn $(SITE_DIR) $(SERVE_DIR)/lab
 	npx --yes http-server $(SERVE_DIR) -p $(PORT) --cors
+
+# R2 へのアップロード
+upload-all: upload-json upload-thumbnails upload-videos
+
+upload-json:
+	$(WRANGLER) r2 object put $(BUCKET)/videos.json --file=services/cloudflare/r2/videos.json --remote
+
+upload-thumbnails:
+	@for f in services/cloudflare/r2/thumbnails/*.jpg; do \
+		$(WRANGLER) r2 object put "$(BUCKET)/thumbnails/$$(basename $$f)" --file="$$f" --remote; \
+	done
+
+upload-videos:
+	@for f in services/cloudflare/r2/videos/*.mp4; do \
+		$(WRANGLER) r2 object put "$(BUCKET)/videos/$$(basename $$f)" --file="$$f" --remote; \
+	done

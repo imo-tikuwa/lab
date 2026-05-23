@@ -46,6 +46,8 @@ jobs:
 
       - name: Build lab
         run: npm run build
+        env:
+          VITE_WORKER_BASE_URL: ${{ vars.VITE_WORKER_BASE_URL }}
 
       - name: Prepare site directory
         run: mv dist site

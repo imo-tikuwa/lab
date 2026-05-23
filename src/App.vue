@@ -4,11 +4,13 @@ import type { ColorMode } from '@/composables/color-mode'
 
 import { usePageNavStore, PAGE_SECTION_ORDER } from '@/stores/page-nav'
 import { useThemeStore } from '@/stores/theme'
+import { useVideoStore } from '@/stores/video'
 import { COLOR_THEMES, applyPrimaryColor } from '@/theme'
 
 const { colorMode, isDark, setColorMode } = useColorMode()
 const navStore = usePageNavStore()
 const themeStore = useThemeStore()
+const videoStore = useVideoStore()
 
 // ページロード時に永続化されたプライマリカラーを適用
 onMounted(() => {
@@ -40,6 +42,12 @@ const dockItems = computed(() => [
     onClick: () => navigateTo('github'),
     className: `cursor-target${navStore.currentSection === 'github' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
   },
+  {
+    icon: () => h('i', { class: 'pi pi-video text-lg text-surface-600 dark:text-surface-200' }),
+    label: '動画',
+    onClick: () => navigateTo('video'),
+    className: `cursor-target${navStore.currentSection === 'video' ? ' ring-2 ring-primary-400 dark:ring-primary-500' : ''}`,
+  },
 ])
 
 const transitionName = computed(() => {
@@ -62,6 +70,7 @@ const squaresGradientColor = computed(() => (isDark.value ? '#0f172a' : '#f8fafc
 const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
 
 function navigateTo(section: Parameters<typeof navStore.navigate>[0]): void {
+  if (section === 'video') videoStore.navigateToList()
   navStore.navigate(section)
   if (isTouchDevice) window.scrollTo(0, 0)
 }
@@ -141,7 +150,8 @@ function navigateTo(section: Parameters<typeof navStore.navigate>[0]): void {
         <SectionPortfolio v-if="navStore.currentSection === 'portfolio'" key="portfolio" />
         <SectionTimeline v-else-if="navStore.currentSection === 'timeline'" key="timeline" />
         <SectionProfile v-else-if="navStore.currentSection === 'profile'" key="profile" />
-        <SectionGitHub v-else key="github" />
+        <SectionGitHub v-else-if="navStore.currentSection === 'github'" key="github" />
+        <SectionVideo v-else key="video" />
       </Transition>
     </div>
 

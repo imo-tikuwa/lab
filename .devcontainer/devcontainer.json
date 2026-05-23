@@ -7,11 +7,15 @@
   "remoteEnv": {
     "TZ": "Asia/Tokyo"
   },
-  // コンテナ初回作成時にClaude Codeをインストール、プロジェクトの依存関係をインストール
-  "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash -s stable && npm ci",
+  // Cloudflare認証情報をWSL2のホームディレクトリ以下からマウント
+  "mounts": [
+    "source=${localEnv:HOME}/.config/cloudflare/lab.env,target=/home/node/.cloudflare.env,type=bind,readonly"
+  ],
+  // コンテナ初回作成時: 認証情報の自動source設定・Claude Codeインストール・依存関係インストール
+  "postCreateCommand": "echo 'set -a; source ~/.cloudflare.env 2>/dev/null; set +a' >> ~/.bashrc && curl -fsSL https://claude.ai/install.sh | bash -s stable && npm ci",
   // ポートフォワーディング設定（コンテナ内のポートをホストに転送）
-  // 5173: Vite開発サーバー
-  "forwardPorts": [5173],
+  // 5173: Vite開発サーバー / 8787: Wrangler（Cloudflare Worker）ローカル開発サーバー
+  "forwardPorts": [5173, 8787],
   // VSCode拡張機能の設定
   "customizations": {
     "vscode": {
