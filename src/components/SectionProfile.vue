@@ -94,6 +94,9 @@ const skillCategories: SkillCategory[] = [
 const skillCategoriesLeft = skillCategories.slice(0, 4)
 const skillCategoriesRight = skillCategories.slice(4)
 
+// AI コーディングツールは 2 カラムの上部に全幅の独立行として表示する
+const aiSkills: SkillBadge[] = [{ label: 'Claude Code' }, { label: 'Codex' }, { label: 'GitHub Copilot' }]
+
 const socialLinks = [
   { href: 'https://x.com/imo_tikuwa', icon: 'pi pi-twitter', label: 'X / Twitter' },
   { href: 'https://github.com/imo-tikuwa', icon: 'pi pi-github', label: 'GitHub' },
@@ -159,8 +162,8 @@ onMounted(articleStore.load)
         <div class="flex flex-col gap-1.5 min-w-0">
           <span class="text-xl font-bold text-surface-900 dark:text-surface-50">imo-tikuwa</span>
           <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
-            開発会社でのエンジニア経験約10年を経て、現在はフリーランスエンジニアとして活動中。<br />
-            フロントエンド・バックエンド・インフラと、領域を問わず幅広く対応しています。
+            開発会社でエンジニアとして約10年を過ごし、現在はフリーランス。<br />
+            アイデアを形にするところから、育てて運用するところまで、まるごと自分の手で作るのが好きです。
           </p>
         </div>
 
@@ -192,6 +195,14 @@ onMounted(articleStore.load)
               <span class="w-2.5 h-2.5 bg-surface-300 dark:bg-surface-600 shrink-0 inline-block" />
               過去経験あり
             </span>
+          </div>
+
+          <!-- AI: 2カラムの上に全幅で配置して強調 -->
+          <div class="flex items-start gap-1.5 pb-2 border-b border-surface-200/70 dark:border-surface-700/70">
+            <span class="text-xs text-surface-400 dark:text-surface-500 whitespace-nowrap shrink-0 min-w-[4.5rem] pt-0.5">AI</span>
+            <div class="flex flex-wrap gap-1.5">
+              <Badge v-for="badge in aiSkills" :key="badge.label" :value="badge.label" :severity="badge.secondary ? 'secondary' : undefined" class="text-xs" />
+            </div>
           </div>
 
           <div class="flex flex-col lg:flex-row">

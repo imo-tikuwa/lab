@@ -34,7 +34,7 @@ const spotlightColor = computed(() => {
   return isDark.value ? hexToRgba(hex, 0.15) : hexToRgba(hex, 0.22)
 })
 
-const categoryOptions = ['すべて', 'GitHub Pages', 'サーバーレスアプリケーション', 'デスクトップアプリ', 'Chrome向けブラウザ拡張', 'ツール']
+const categoryOptions = ['すべて', 'GitHub Pages', 'サーバーレスアプリケーション', 'Webサービス', 'デスクトップアプリ', 'Chrome向けブラウザ拡張', 'ツール']
 
 const layoutOptions: { value: LayoutType; icon: string }[] = [
   { value: 'list', icon: 'pi pi-list' },
