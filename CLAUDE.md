@@ -3,7 +3,20 @@
 GitHub Pages で公開する静的ツール集のリポジトリ。
 `rpgsave-editor` リポジトリをベースにスキャフォールドした Vue + PrimeVue + Tailwind 構成。
 
-ブランチはmainに直接コミットすること。
+---
+
+## Git ワークフロー
+
+- **ユーザーから明示的に「コミットして」と言われるまでコミットしない。** 作業（実装・修正・調査）の依頼は、コミットの許可ではない。
+- 「コミットして」「pushして」等の指示は、**その時点の変更に対する一回限り**のもの。一度言われたからといって、以後の別の変更を勝手にコミット/push してはいけない。変更のたびに新たな指示を待つ。
+- 「コミットOK」はプッシュの許可ではない。**「pushして」と言われるまで push しない。** タグ作成・push も同様に明示指示を待つ。
+- ブランチは main に直接コミットする運用。コミットのための一時作業ブランチ（踏み台ブランチ）を勝手に作らない。
+- コミットメッセージは Conventional Commits 形式（`feat:` / `fix:` / `chore:` / `ci:` 等）でリポジトリのスタイルに合わせる。
+- コミットには必ず `Co-Authored-By` トレイラーを付ける。モデル名は固定せず、コミットを実行した時点で実際に稼働しているモデル名にすること：
+  ```
+  Co-Authored-By: Claude <モデル名> <noreply@anthropic.com>
+  ```
+  例: Opus 4.8 稼働中なら `Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>`、Sonnet 4.6 稼働中なら `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>`。
 
 ---
 
